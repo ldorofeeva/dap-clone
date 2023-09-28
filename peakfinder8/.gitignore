@@ -1,5 +1,3 @@
-build/
 cython/peakfinder8_extension.cpp
-peakfinder8_extension.cpython-*-x86_64-linux-gnu.so
-libcheetah.so
+libpeakfinder8.so
 peakfinders.o

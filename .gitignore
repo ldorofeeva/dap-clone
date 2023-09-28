@@ -1,0 +1,4 @@
+build/
+dist/
+peakfinder8_extension.cpython-*-x86_64-linux-gnu.so
+peakfinder8_extension.egg-info/
