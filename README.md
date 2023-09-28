@@ -18,7 +18,7 @@ conda activate dap
 ### To install from source
 Create conda environment
 ```
-conda create -n test-dap cython numpy pyzmq jungfrau_util
+conda create -n test-dap cython numpy pyzmq jungfrau_utils
 conda activate test-dap
 ```
 Clone code of the dap and install peakfinder8_extension in the conda environment
