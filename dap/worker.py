@@ -164,10 +164,10 @@ def main():
                 if not event_darkshot:
                     results['laser_on'] = event_laser
 
-# special settings for Cristallina JF16 detector
-#               if detector in ["JF16T03V01"]:
-#                   if not event_ppicker:
-#                       continue
+# Filter only ppicker events, if requested; skipping all other events
+                select_only_ppicker_events = results.get('select_only_ppicker_events', 0)
+                if select_only_ppicker_events and not event_ppicker:
+                    continue
 
 # special settings for p20270, only few shots were opened by pulse-picker
 #                if detector in ["JF06T32V02"]:
