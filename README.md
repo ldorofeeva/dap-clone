@@ -96,8 +96,8 @@ options:
        * `'do_peakfinder_analysis': 1/0` - Specifies whether to execute the peakfinder8 algorithm.
        * `'beam_center_x/beam_center_y': float/float` - Represents the beam center coordinates in the detector space.
        * `'hitfinder_min_snr': float` - Signal-to-noise value used to differentiate between background and signal.
-       * `hitfinder_min_pix_count': float` - Sets the minimum pixel count required to constitute a peak.
-       * `hitfinder_adc_thresh: float` - Excludes pixels below this threshold from peak determination.
+       * `'hitfinder_min_pix_count': float` - Sets the minimum pixel count required to constitute a peak.
+       * `'hitfinder_adc_thresh': float` - Excludes pixels below this threshold from peak determination.
        * `'npeaks_threshold_hit': float` - Threshold on the number of discovered peaks to categorize a frame as a hit or not.
 
      Algorithm Output:
