@@ -2,10 +2,8 @@ import argparse
 import json
 import os
 from copy import copy
-from datetime import datetime
-from math import exp
-from random import gauss, randint
-from time import sleep, time
+from random import randint
+from time import sleep
 
 import jungfrau_utils as ju
 import numpy as np
@@ -36,10 +34,6 @@ def prepare_radial_profile(data, center, keep_pixels=None):
     return r, nr
 
 
-def mask_corner_pixels(pixel_mask, n_pixels):
-
-    return pixel_mask
-
 
 def main():
 
@@ -58,8 +52,7 @@ def main():
     if args.backend:
         BACKEND_ADDRESS = args.backend
     else:
-        print("no backend address defined, exit")
-        exit()
+        raise SystemExit("no backend address defined")
 
     FA_HOST_ACCUMULATE    = args.accumulator
     FA_PORT_ACCUMULATE    = args.accumulator_port
@@ -132,8 +125,8 @@ def main():
                             print(f'({pulseid}) update peakfinder parameters {old_peakfinder_parameters}', flush=True)
                             print(f'                                     --> {peakfinder_parameters}', flush=True)
                             print("",flush=True)
-            except:
-                print(f'({pulseid}) problem to read peakfinder parameters file, worker : {worker}', flush=True)
+            except Exception as e:
+                print(f'({pulseid}) problem ({e}) to read peakfinder parameters file, worker : {worker}', flush=True)
 
             events = dict(poller.poll(2000)) # check every 2 seconds in each worker
             if backend_socket in events:
@@ -181,7 +174,6 @@ def main():
                 if pedestal_file_name is not None and pedestal_file_name != pedestal_file_name_saved:
                     n_corner_pixels_mask = results.get("n_corner_pixels_mask", 0)
                     pixel_mask_current = ju_stream_adapter.handler.pixel_mask
-                    pixel_mask_current = mask_corner_pixels(pixel_mask_current, n_corner_pixels_mask)
                     ju_stream_adapter.handler.pixel_mask = pixel_mask_current
                     pedestal_file_name_saved = pedestal_file_name
 
@@ -278,7 +270,7 @@ def main():
 # pump probe analysis
                 do_radial_integration = results.get("do_radial_integration", 0)
 
-                if (do_radial_integration != 0):
+                if do_radial_integration != 0:
 
                     data_copy_1 = np.copy(data)
 
@@ -496,6 +488,11 @@ def main():
                         visualisation_socket.send(data, flags, copy=True, track=True)
 
 
+
+
+
 if __name__ == "__main__":
     main()
+
+
 
