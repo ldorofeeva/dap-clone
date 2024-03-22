@@ -10,10 +10,9 @@ import numpy as np
 import zmq
 from peakfinder8_extension import peakfinder_8
 
+
 flags = 0
 
-MODULE_SIZE_X = 1024
-MODULE_SIZE_Y = 512
 
 def radial_profile(data, r, nr, keep_pixels=None):
     if keep_pixels is not None:
