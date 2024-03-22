@@ -13,8 +13,8 @@
 
 typedef struct {
 public:
-	long	    nPeaks;
-	long	    nHot;
+	long		nPeaks;
+	long		nHot;
 	float		peakResolution;			// Radius of 80% of peaks
 	float		peakResolutionA;		// Radius of 80% of peaks
 	float		peakDensity;			// Density of peaks within this 80% figure

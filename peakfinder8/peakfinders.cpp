@@ -20,52 +20,51 @@
  *      Create arrays for remembering Bragg peak data
  */
 void allocatePeakList(tPeakList *peak, long NpeaksMax) {
-        peak->nPeaks = 0;
-        peak->nPeaks_max = NpeaksMax;
-        peak->nHot = 0;
-        peak->peakResolution = 0;
-        peak->peakResolutionA = 0;
-        peak->peakDensity = 0;
-        peak->peakNpix = 0;
-        peak->peakTotal = 0;
+	peak->nPeaks = 0;
+	peak->nPeaks_max = NpeaksMax;
+	peak->nHot = 0;
+	peak->peakResolution = 0;
+	peak->peakResolutionA = 0;
+	peak->peakDensity = 0;
+	peak->peakNpix = 0;
+	peak->peakTotal = 0;
 
-        peak->peak_maxintensity = (float *) calloc(NpeaksMax, sizeof(float));
-        peak->peak_totalintensity = (float *) calloc(NpeaksMax, sizeof(float));
-        peak->peak_sigma = (float *) calloc(NpeaksMax, sizeof(float));
-        peak->peak_snr = (float *) calloc(NpeaksMax, sizeof(float));
-        peak->peak_npix = (float *) calloc(NpeaksMax, sizeof(float));
-        peak->peak_com_x = (float *) calloc(NpeaksMax, sizeof(float));
-        peak->peak_com_y = (float *) calloc(NpeaksMax, sizeof(float));
-        peak->peak_com_index = (long *) calloc(NpeaksMax, sizeof(long));
-        peak->peak_com_x_assembled = (float *) calloc(NpeaksMax, sizeof(float));
-        peak->peak_com_y_assembled = (float *) calloc(NpeaksMax, sizeof(float));
-        peak->peak_com_r_assembled = (float *) calloc(NpeaksMax, sizeof(float));
-        peak->peak_com_q = (float *) calloc(NpeaksMax, sizeof(float));
-        peak->peak_com_res = (float *) calloc(NpeaksMax, sizeof(float));
-        peak->memoryAllocated = 1;
+	peak->peak_maxintensity = (float *) calloc(NpeaksMax, sizeof(float));
+	peak->peak_totalintensity = (float *) calloc(NpeaksMax, sizeof(float));
+	peak->peak_sigma = (float *) calloc(NpeaksMax, sizeof(float));
+	peak->peak_snr = (float *) calloc(NpeaksMax, sizeof(float));
+	peak->peak_npix = (float *) calloc(NpeaksMax, sizeof(float));
+	peak->peak_com_x = (float *) calloc(NpeaksMax, sizeof(float));
+	peak->peak_com_y = (float *) calloc(NpeaksMax, sizeof(float));
+	peak->peak_com_index = (long *) calloc(NpeaksMax, sizeof(long));
+	peak->peak_com_x_assembled = (float *) calloc(NpeaksMax, sizeof(float));
+	peak->peak_com_y_assembled = (float *) calloc(NpeaksMax, sizeof(float));
+	peak->peak_com_r_assembled = (float *) calloc(NpeaksMax, sizeof(float));
+	peak->peak_com_q = (float *) calloc(NpeaksMax, sizeof(float));
+	peak->peak_com_res = (float *) calloc(NpeaksMax, sizeof(float));
+	peak->memoryAllocated = 1;
 }
+
 
 /*
  *      Clean up Bragg peak arrays
  */
 void freePeakList(tPeakList peak) {
-        free(peak.peak_maxintensity);
-        free(peak.peak_totalintensity);
-        free(peak.peak_sigma);
-        free(peak.peak_snr);
-        free(peak.peak_npix);
-        free(peak.peak_com_x);
-        free(peak.peak_com_y);
-        free(peak.peak_com_index);
-        free(peak.peak_com_x_assembled);
-        free(peak.peak_com_y_assembled);
-        free(peak.peak_com_r_assembled);
-        free(peak.peak_com_q);
-        free(peak.peak_com_res);
-        peak.memoryAllocated = 0;
+	free(peak.peak_maxintensity);
+	free(peak.peak_totalintensity);
+	free(peak.peak_sigma);
+	free(peak.peak_snr);
+	free(peak.peak_npix);
+	free(peak.peak_com_x);
+	free(peak.peak_com_y);
+	free(peak.peak_com_index);
+	free(peak.peak_com_x_assembled);
+	free(peak.peak_com_y_assembled);
+	free(peak.peak_com_r_assembled);
+	free(peak.peak_com_q);
+	free(peak.peak_com_res);
+	peak.memoryAllocated = 0;
 }
-
-
 
 
 /*
@@ -100,7 +99,7 @@ int peakfinder8(tPeakList *peaklist, float *data, char *mask, float *pix_r, long
 	long	e;
 	long	*inx = (long *) calloc(pix_nn, sizeof(long));
 	long	*iny = (long *) calloc(pix_nn, sizeof(long));
-	float   thisI, thisIraw;
+	float	thisI, thisIraw;
 	float	totI,totIraw;
 	float	maxI, maxIraw;
 	float	snr;
@@ -160,100 +159,100 @@ int peakfinder8(tPeakList *peaklist, float *data, char *mask, float *pix_r, long
 	long	*peakpixels = (long *) calloc(hitfinderMaxPixCount, sizeof(long));
 	char	*peakpixel = (char *) calloc(pix_nn, sizeof(char));
 
-        char     *rthreshold_changed = (char *) malloc(lmaxr*sizeof(char));
+	char	*rthreshold_changed = (char *) malloc(lmaxr*sizeof(char));
 
-        int     *pix_rint = (int *) malloc(pix_nn*sizeof(int));
-        long    *pixels_check = (long *) malloc(pix_nn*sizeof(long));
+	int	*pix_rint = (int *) malloc(pix_nn*sizeof(int));
+	long	*pixels_check = (long *) malloc(pix_nn*sizeof(long));
 
-        long peakCounter = 0;
+	long peakCounter = 0;
 
 	for(long i=0; i<lmaxr; i++) {
 		rthreshold[i] = 1e9;
-                rthreshold_changed[i] = 1;
+		rthreshold_changed[i] = 1;
 	}
 
-        for(long i=0;i<pix_nn;i++){
-                pix_rint[i] = lrint(pix_r[i]);
-                pixels_check[i] = i;
-        }
-        long    n_pixels_check = pix_nn;
+	for(long i=0;i<pix_nn;i++){
+		pix_rint[i] = lrint(pix_r[i]);
+		pixels_check[i] = i;
+	}
+	long	n_pixels_check = pix_nn;
 
 	// Compute sigma and average of data values at each radius
 	// From this, compute the ADC threshold to be applied at each radius
 	// Iterate a few times to reduce the effect of positive outliers (ie: peaks)
 	long	thisr;
 	float	thisoffset, thissigma;
-        float   thisthreshold;
-        int     counter = 0;
-        bool    rthreshold_converged = false;
+	float	thisthreshold;
+	int	counter = 0;
+	bool	rthreshold_converged = false;
 
-        //goto END;
+	//goto END;
 
 //	for(long counter=0; counter<5; counter++) {
-        while ( !rthreshold_converged & counter < 10 ) {
-                //printf("counter %i %i\n", counter, n_pixels_check);
-                counter++;
+	while ( !rthreshold_converged & counter < 10 ) {
+		//printf("counter %i %i\n", counter, n_pixels_check);
+		counter++;
 		//for(long i=0; i<lmaxr; i++) {
 		//	roffset[i] = 0;
 		//	rsigma[i] = 0;
 		//	rcount[i] = 0;
 		//}
 		memset(roffset,0,lmaxr*sizeof(float));
-                memset(rsigma, 0,lmaxr*sizeof(float));
-                memset(rcount, 0,lmaxr*sizeof(long));
+		memset(rsigma, 0,lmaxr*sizeof(float));
+		memset(rcount, 0,lmaxr*sizeof(long));
 
-                long new_pixels_check=0;
+		long new_pixels_check=0;
 		//for(long i=0;i<pix_nn;i++){
 		for(long i_pixel=0; i_pixel<n_pixels_check; i_pixel++) {
-                        long i = pixels_check[i_pixel];
-                        thisr = pix_rint[i];
-                        if ( rthreshold_changed[thisr] == 1 ) {
-			        if(mask[i] != 0) {
-				        if(temp[i] < rthreshold[thisr]) {
-					        roffset[thisr] += temp[i];
-					        rsigma[thisr] += (temp[i]*temp[i]);
-					        rcount[thisr] += 1;
-				        }
-                                        pixels_check[new_pixels_check] = i;
-                                        new_pixels_check++;
-                                }
+			long i = pixels_check[i_pixel];
+			thisr = pix_rint[i];
+			if ( rthreshold_changed[thisr] == 1 ) {
+				if(mask[i] != 0) {
+					if(temp[i] < rthreshold[thisr]) {
+						roffset[thisr] += temp[i];
+						rsigma[thisr] += (temp[i]*temp[i]);
+						rcount[thisr] += 1;
+					}
+					pixels_check[new_pixels_check] = i;
+					new_pixels_check++;
+				}
 			}
 		}
-                n_pixels_check = new_pixels_check;
+		n_pixels_check = new_pixels_check;
 
-                rthreshold_converged = true;
+		rthreshold_converged = true;
 		for(long i=0; i<lmaxr; i++) {
-                        if ( rthreshold_changed[i] == 1 ) {
-			        if(rcount[i] == 0) {
-				        roffset[i] = 0;
-				        rsigma[i] = 0;
-                                        thisthreshold = 1e9;
-				        //rthreshold[i] = ADCthresh;		// For testing
-			        }
-			        else {
-				        thisoffset = roffset[i]/rcount[i];
-				        thissigma = sqrt(rsigma[i]/rcount[i] - (thisoffset)*(thisoffset));
-				        roffset[i] = thisoffset;
-				        rsigma[i] = thissigma;
-                                        thisthreshold = roffset[i] + hitfinderMinSNR*rsigma[i];
-				        if(thisthreshold < ADCthresh)
-					        thisthreshold = ADCthresh;
-				        //rthreshold[i] = ADCthresh;		// For testing
-			        }
-                                rthreshold_changed[i] = 0;
-                                if ( fabs(thisthreshold-rthreshold[i]) > 0.1*rsigma[i] ) {
-                                        rthreshold_changed[i] = 1;
-                                        rthreshold_converged = false;
-                                }
-                                rthreshold[i] = thisthreshold;
-                        }
+			if ( rthreshold_changed[i] == 1 ) {
+				if(rcount[i] == 0) {
+					roffset[i] = 0;
+					rsigma[i] = 0;
+					thisthreshold = 1e9;
+					//rthreshold[i] = ADCthresh;		// For testing
+				}
+				else {
+					thisoffset = roffset[i]/rcount[i];
+					thissigma = sqrt(rsigma[i]/rcount[i] - (thisoffset)*(thisoffset));
+					roffset[i] = thisoffset;
+					rsigma[i] = thissigma;
+					thisthreshold = roffset[i] + hitfinderMinSNR*rsigma[i];
+					if(thisthreshold < ADCthresh)
+						thisthreshold = ADCthresh;
+					//rthreshold[i] = ADCthresh;		// For testing
+				}
+				rthreshold_changed[i] = 0;
+				if ( fabs(thisthreshold-rthreshold[i]) > 0.1*rsigma[i] ) {
+					rthreshold_changed[i] = 1;
+					rthreshold_converged = false;
+				}
+				rthreshold[i] = thisthreshold;
+			}
 		}
 	}
 
 	com_x=0;
 	com_y=0;
 
-        //goto END;
+	//goto END;
 
 	for(long mj=0; mj<nasics_y; mj++){
 		for(long mi=0; mi<nasics_x; mi++){
@@ -361,21 +360,21 @@ int peakfinder8(tPeakList *peaklist, float *data, char *mask, float *pix_r, long
 						com_y = peak_com_y/fabs(totI);
 						com_e = lrint(com_x) + lrint(com_y)*pix_nx;
 
-						long   com_xi = lrint(com_x) - mi*asic_nx;
-						long   com_yi = lrint(com_y) - mj*asic_ny;
+						long	com_xi = lrint(com_x) - mi*asic_nx;
+						long	com_yi = lrint(com_y) - mj*asic_ny;
 
 
 						/*
 						 *	Calculate the local signal-to-noise ratio and local background in an annulus around this peak
 						 *	(excluding pixels which look like they might be part of another peak)
 						 */
-						float   localSigma=0;
-						float   localOffset=0;
-						long    ringWidth = 2*hitfinderLocalBGRadius;
+						float	localSigma=0;
+						float	localOffset=0;
+						long	ringWidth = 2*hitfinderLocalBGRadius;
 
-						float   sumI = 0;
-						float   sumIsquared = 0;
-						long    np_sigma = 0;
+						float	sumI = 0;
+						float	sumIsquared = 0;
+						long	np_sigma = 0;
 						long	np_counted = 0;
 						float	fbgr;
 						float	backgroundMaxI=0;
@@ -474,7 +473,6 @@ int peakfinder8(tPeakList *peaklist, float *data, char *mask, float *pix_r, long
 						com_e = lrint(com_x) + lrint(com_y)*pix_nx;
 
 
-
 						/*
 						 *	Calculate signal-to-noise and apply SNR criteria
 						 */
@@ -538,7 +536,7 @@ int peakfinder8(tPeakList *peaklist, float *data, char *mask, float *pix_r, long
 		}
 	}
 
-        //END: ;
+	//END: ;
 
 	free(temp);
 	free(inx);
@@ -552,15 +550,14 @@ int peakfinder8(tPeakList *peaklist, float *data, char *mask, float *pix_r, long
 	free(rcount);
 	free(rthreshold);
 
-        free(pix_rint);
-        free(pixels_check);
-        free(rthreshold_changed);
+	free(pix_rint);
+	free(pixels_check);
+	free(rthreshold_changed);
 
 	peaklist->nPeaks = peakCounter;
 	return(peaklist->nPeaks);
 	/*************************************************/
-
-
 }
+
 
 
