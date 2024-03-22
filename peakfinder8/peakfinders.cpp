@@ -21,14 +21,14 @@
  */
 void allocatePeakList(tPeakList *peak, long NpeaksMax) {
         peak->nPeaks = 0;
-        peak->nPeaks_max = NpeaksMax;   
+        peak->nPeaks_max = NpeaksMax;
         peak->nHot = 0;
         peak->peakResolution = 0;
         peak->peakResolutionA = 0;
         peak->peakDensity = 0;
         peak->peakNpix = 0;
         peak->peakTotal = 0;
-        
+
         peak->peak_maxintensity = (float *) calloc(NpeaksMax, sizeof(float));
         peak->peak_totalintensity = (float *) calloc(NpeaksMax, sizeof(float));
         peak->peak_sigma = (float *) calloc(NpeaksMax, sizeof(float));
@@ -41,7 +41,7 @@ void allocatePeakList(tPeakList *peak, long NpeaksMax) {
         peak->peak_com_y_assembled = (float *) calloc(NpeaksMax, sizeof(float));
         peak->peak_com_r_assembled = (float *) calloc(NpeaksMax, sizeof(float));
         peak->peak_com_q = (float *) calloc(NpeaksMax, sizeof(float));
-        peak->peak_com_res = (float *) calloc(NpeaksMax, sizeof(float));        
+        peak->peak_com_res = (float *) calloc(NpeaksMax, sizeof(float));
         peak->memoryAllocated = 1;
 }
 
@@ -75,20 +75,20 @@ void freePeakList(tPeakList peak) {
  *	Anton Barty
  */
 int peakfinder8(tPeakList *peaklist, float *data, char *mask, float *pix_r, long asic_nx, long asic_ny, long nasics_x, long nasics_y, float ADCthresh, float hitfinderMinSNR, long hitfinderMinPixCount, long hitfinderMaxPixCount, long hitfinderLocalBGRadius) {
-	
+
 	// Derived values
 	long	pix_nx = asic_nx*nasics_x;
 	long	pix_ny = asic_ny*nasics_y;
 	long	pix_nn = pix_nx*pix_ny;
 	//long	asic_nn = asic_nx*asic_ny;
 	long	hitfinderNpeaksMax = peaklist->nPeaks_max;
-	
-	
+
+
 	peaklist->nPeaks = 0;
 	peaklist->peakNpix = 0;
 	peaklist->peakTotal = 0;
-	
-	
+
+
 	// Variables for this hitfinder
 	long	nat = 0;
 	long	lastnat = 0;
@@ -111,28 +111,28 @@ int peakfinder8(tPeakList *peaklist, float *data, char *mask, float *pix_r, long
 	long	fs, ss;
 	float	com_x, com_y, com_e;
 	float	thisADCthresh;
-	
-	
+
+
 	nat = 0;
 	//counter = 0;
 	total = 0.0;
 	snr=0;
 	maxI = 0;
-	
+
 	/*
 	 *	Create a buffer for image data so we don't nuke the main image by mistake
 	 */
 	float *temp = (float*) malloc(pix_nn*sizeof(float));
 	memcpy(temp, data, pix_nn*sizeof(float));
-	
-	
+
+
 	/*
 	 *	Apply mask (multiply data by 0 to ignore regions - this makes data below threshold for peak finding)
 	 */
 	for(long i=0;i<pix_nn;i++){
 		temp[i] *= mask[i];
 	}
-	
+
 	/*
 	 *	Determine noise and offset as a funciton of radius
 	 */
@@ -140,7 +140,7 @@ int peakfinder8(tPeakList *peaklist, float *data, char *mask, float *pix_r, long
 	long	lminr, lmaxr;
 	fminr = 1e9;
 	fmaxr = -1e9;
-	
+
 	// Figure out radius bounds
 	for(long i=0;i<pix_nn;i++){
 		if (pix_r[i] > fmaxr)
@@ -150,16 +150,16 @@ int peakfinder8(tPeakList *peaklist, float *data, char *mask, float *pix_r, long
 	}
 	lmaxr = (int)ceil(fmaxr)+1;
 	lminr = 0;
-	
+
 	// Allocate and zero arrays
 	float	*rsigma = (float*) malloc(lmaxr*sizeof(float));
 	float	*roffset = (float*) malloc(lmaxr*sizeof(float));
 	long	*rcount = (long*) malloc(lmaxr*sizeof(long));
 	float	*rthreshold = (float*) malloc(lmaxr*sizeof(float));
-	
+
 	long	*peakpixels = (long *) calloc(hitfinderMaxPixCount, sizeof(long));
 	char	*peakpixel = (char *) calloc(pix_nn, sizeof(char));
-	
+
         char     *rthreshold_changed = (char *) malloc(lmaxr*sizeof(char));
 
         int     *pix_rint = (int *) malloc(pix_nn*sizeof(int));
@@ -177,7 +177,7 @@ int peakfinder8(tPeakList *peaklist, float *data, char *mask, float *pix_r, long
                 pixels_check[i] = i;
         }
         long    n_pixels_check = pix_nn;
-	
+
 	// Compute sigma and average of data values at each radius
 	// From this, compute the ADC threshold to be applied at each radius
 	// Iterate a few times to reduce the effect of positive outliers (ie: peaks)
@@ -215,7 +215,7 @@ int peakfinder8(tPeakList *peaklist, float *data, char *mask, float *pix_r, long
 					        rcount[thisr] += 1;
 				        }
                                         pixels_check[new_pixels_check] = i;
-                                        new_pixels_check++; 
+                                        new_pixels_check++;
                                 }
 			}
 		}
@@ -249,7 +249,7 @@ int peakfinder8(tPeakList *peaklist, float *data, char *mask, float *pix_r, long
                         }
 		}
 	}
-	
+
 	com_x=0;
 	com_y=0;
 
@@ -257,24 +257,24 @@ int peakfinder8(tPeakList *peaklist, float *data, char *mask, float *pix_r, long
 
 	for(long mj=0; mj<nasics_y; mj++){
 		for(long mi=0; mi<nasics_x; mi++){
-			
+
 			// Loop over pixels within a module
 			for(long j=1; j<asic_ny-1; j++){
 				for(long i=1; i<asic_nx-1; i++){
-					
-					
+
+
 					ss = (j+mj*asic_ny)*pix_nx;
 					fs = i+mi*asic_nx;
 					e = ss + fs;
-					
+
 					if(e > pix_nn) {
 						printf("Array bounds error: e=%li\n",e);
 						exit(1);
 					}
-					
+
 					thisr = pix_rint[e];
 					thisADCthresh = rthreshold[thisr];
-					
+
 					if(temp[e] > thisADCthresh && peakpixel[e] == 0){
 						// This might be the start of a new peak - start searching
 						inx[0] = i;
@@ -287,10 +287,10 @@ int peakfinder8(tPeakList *peaklist, float *data, char *mask, float *pix_r, long
 						maxIraw = 0;
 						peak_com_x = 0;
 						peak_com_y = 0;
-						
+
 						// Keep looping until the pixel count within this peak does not change
 						do {
-							
+
 							lastnat = nat;
 							// Loop through points known to be within this peak
 							for(long p=0; p<nat; p++){
@@ -305,20 +305,20 @@ int peakfinder8(tPeakList *peaklist, float *data, char *mask, float *pix_r, long
 										continue;
 									if((iny[p]+search_y[k]) >= asic_ny)
 										continue;
-									
+
 									// Neighbour point in big array
 									thisx = inx[p]+search_x[k]+mi*asic_nx;
 									thisy = iny[p]+search_y[k]+mj*asic_ny;
 									e = thisx + thisy*pix_nx;
-									
+
 									//if(e < 0 || e >= pix_nn){
 									//	printf("Array bounds error: e=%i\n",e);
 									//	continue;
 									//}
-									
+
 									thisr = pix_rint[e];
 									thisADCthresh = rthreshold[thisr];
-									
+
 									// Above threshold?
 									if(temp[e] > thisADCthresh && peakpixel[e] == 0 && mask[e] != 0){
 										//if(nat < 0 || nat >= global->pix_nn) {
@@ -340,20 +340,20 @@ int peakfinder8(tPeakList *peaklist, float *data, char *mask, float *pix_r, long
 											maxI = thisI;
 										if (thisI > maxIraw)
 											maxIraw = temp[e];
-										
+
 										nat++;
 									}
 								}
 							}
 						} while(lastnat != nat);
-						
-						
+
+
 						// Too many or too few pixels means ignore this 'peak'; move on now
 						if(nat<hitfinderMinPixCount || nat>hitfinderMaxPixCount) {
 							continue;
 						}
-						
-						
+
+
 						/*
 						 *	Calculate center of mass for this peak from initial peak search
 						 */
@@ -363,8 +363,8 @@ int peakfinder8(tPeakList *peaklist, float *data, char *mask, float *pix_r, long
 
 						long   com_xi = lrint(com_x) - mi*asic_nx;
 						long   com_yi = lrint(com_y) - mj*asic_ny;
-						
-						
+
+
 						/*
 						 *	Calculate the local signal-to-noise ratio and local background in an annulus around this peak
 						 *	(excluding pixels which look like they might be part of another peak)
@@ -372,7 +372,7 @@ int peakfinder8(tPeakList *peaklist, float *data, char *mask, float *pix_r, long
 						float   localSigma=0;
 						float   localOffset=0;
 						long    ringWidth = 2*hitfinderLocalBGRadius;
-						
+
 						float   sumI = 0;
 						float   sumIsquared = 0;
 						long    np_sigma = 0;
@@ -380,10 +380,10 @@ int peakfinder8(tPeakList *peaklist, float *data, char *mask, float *pix_r, long
 						float	fbgr;
 						float	backgroundMaxI=0;
 						float	fBackgroundThresh=0;
-						
+
 						for(long bj=-ringWidth; bj<ringWidth; bj++){
 							for(long bi=-ringWidth; bi<ringWidth; bi++){
-								
+
 								// Within-ASIC check
 								if((com_xi+bi) < 0)
 									continue;
@@ -393,28 +393,28 @@ int peakfinder8(tPeakList *peaklist, float *data, char *mask, float *pix_r, long
 									continue;
 								if((com_yi+bj) >= asic_ny)
 									continue;
-								
+
 								// Within outer ring check
 								fbgr = sqrt( bi*bi + bj*bj );
 								if( fbgr > ringWidth )// || fbgr <= hitfinderLocalBGRadius )				// || fbgr > hitfinderLocalBGRadius)
 									continue;
-								
+
 								// Position of this point in data stream
 								thisx = com_xi + bi + mi*asic_nx;
 								thisy = com_yi + bj + mj*asic_ny;
 								e = thisx + thisy*pix_nx;
-								
+
 								thisr = pix_rint[e];
 								thisADCthresh = rthreshold[thisr];
-								
+
 								// Intensity above background
 								thisI = temp[e];
-								
-								
+
+
 								// If above ADC threshold, this could be part of another peak
 								//if (temp[e] > thisADCthresh)
 								//	continue;
-								
+
 								// Keep track of value and value-squared for offset and sigma calculation
 								// if(peakpixel[e] == 0 && mask[e] != 0) {
 								if(temp[e] < thisADCthresh && peakpixel[e] == 0 && mask[e] != 0) {
@@ -428,7 +428,7 @@ int peakfinder8(tPeakList *peaklist, float *data, char *mask, float *pix_r, long
 								np_counted += 1;
 							}
 						}
-						
+
 						// Calculate local background and standard deviation
 						if (np_sigma != 0) {
 							localOffset = sumI/np_sigma;
@@ -438,8 +438,8 @@ int peakfinder8(tPeakList *peaklist, float *data, char *mask, float *pix_r, long
 							localOffset = roffset[pix_rint[lrint(com_e)]];
 							localSigma = 0.01;
 						}
-						
-						
+
+
 						/*
 						 *	Re-integrate (and re-centroid) peak using local background estimates
 						 */
@@ -453,7 +453,7 @@ int peakfinder8(tPeakList *peaklist, float *data, char *mask, float *pix_r, long
 							e = peakpixels[counter];
 							thisIraw = temp[e];
 							thisI = thisIraw - localOffset;
-							
+
 							totI += thisI;
 							totIraw += thisIraw;
 
@@ -473,7 +473,7 @@ int peakfinder8(tPeakList *peaklist, float *data, char *mask, float *pix_r, long
 						com_y = peak_com_y/fabs(totI);
 						com_e = lrint(com_x) + lrint(com_y)*pix_nx;
 
-						
+
 
 						/*
 						 *	Calculate signal-to-noise and apply SNR criteria
@@ -482,11 +482,11 @@ int peakfinder8(tPeakList *peaklist, float *data, char *mask, float *pix_r, long
 						//snr = (float) (maxI)/localSigma;
 						//snr = (float) (totIraw-nat*localOffset)/localSigma;
 						//snr = (float) (maxIraw-localOffset)/localSigma;
-						
+
 						// The more pixels there are in the peak, the more relaxed we are about this criterion
 						if( snr < hitfinderMinSNR )        //   - nat +hitfinderMinPixCount
 							continue;
-						
+
 						// Is the maximum intensity in the peak enough above intensity in background region to be a peak and not noise?
 						// The more pixels there are in the peak, the more relaxed we are about this criterion
 						//fBackgroundThresh = hitfinderMinSNR - nat;
@@ -495,24 +495,24 @@ int peakfinder8(tPeakList *peaklist, float *data, char *mask, float *pix_r, long
 						fBackgroundThresh *= (backgroundMaxI-localOffset);
 						if( maxI < fBackgroundThresh)
 							continue;
-						
-						
+
+
 						// This is a peak? If so, add info to peak list
 						if(nat>=hitfinderMinPixCount && nat<=hitfinderMaxPixCount ) {
-							
+
 							// This CAN happen!
 							if(totI == 0)
 								continue;
-							
+
 							//com_x = peak_com_x/fabs(totI);
 							//com_y = peak_com_y/fabs(totI);
-							
+
 							e = lrint(com_x) + lrint(com_y)*pix_nx;
 							if(e < 0 || e >= pix_nn){
 								printf("Array bounds error: e=%ld\n",e);
 								continue;
 							}
-							
+
 							// Remember peak information
 							if (peakCounter < hitfinderNpeaksMax) {
 								peaklist->peakNpix += nat;
@@ -539,28 +539,28 @@ int peakfinder8(tPeakList *peaklist, float *data, char *mask, float *pix_r, long
 	}
 
         //END: ;
-	
+
 	free(temp);
 	free(inx);
 	free(iny);
 	free(peakpixel);
 	free(peakpixels);
-	
-	
+
+
 	free(roffset);
 	free(rsigma);
 	free(rcount);
 	free(rthreshold);
-	
+
         free(pix_rint);
         free(pixels_check);
         free(rthreshold_changed);
-	
+
 	peaklist->nPeaks = peakCounter;
 	return(peaklist->nPeaks);
 	/*************************************************/
-	
-	
+
+
 }
 
 

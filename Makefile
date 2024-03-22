@@ -11,7 +11,7 @@ clean:
 	rm -rf dist peakfinder8_extension.egg-info
 	rm -rf peakfinder8/cython/peakfinder8_extension.cpp
 
-peakfinder8/peakfinders.o: peakfinder8/cheetahmodules.h  peakfinder8/peakfinders.cpp  peakfinder8/peakfinders.h 
+peakfinder8/peakfinders.o: peakfinder8/cheetahmodules.h  peakfinder8/peakfinders.cpp  peakfinder8/peakfinders.h
 	gcc -fPIC -I ./peakfinder8 -c peakfinder8/peakfinders.cpp -o peakfinder8/peakfinders.o
 
 peakfinder8/libpeakfinder8.so: peakfinder8/peakfinders.o

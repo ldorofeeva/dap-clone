@@ -23,7 +23,7 @@ def radial_profile(data, r, nr, keep_pixels=None):
     else:
         tbin = np.bincount(r, data.ravel())
     radialprofile = tbin / nr
-    return radialprofile 
+    return radialprofile
 
 def prepare_radial_profile(data, center, keep_pixels=None):
     y, x = np.indices((data.shape))
@@ -54,7 +54,7 @@ def main():
     parser.add_argument("--skip_frames_rate", default=1, type=int, help="send to streamvis each of skip_frames_rate frames")
 
     args = parser.parse_args()
-    
+
     if args.backend:
         BACKEND_ADDRESS = args.backend
     else:
@@ -87,7 +87,7 @@ def main():
         worker = 1
 
     # receive from backend:
-        backend_socket = zmq_context.socket(zmq.PULL) 
+        backend_socket = zmq_context.socket(zmq.PULL)
         backend_socket.connect(BACKEND_ADDRESS)
 
         poller.register(backend_socket, zmq.POLLIN)
@@ -140,7 +140,7 @@ def main():
 
                 metadata = backend_socket.recv_json(flags)
                 image = backend_socket.recv(flags, copy=False, track=False)
-                image = np.frombuffer(image, dtype=metadata['type']).reshape(metadata['shape']) 
+                image = np.frombuffer(image, dtype=metadata['type']).reshape(metadata['shape'])
 
                 results = copy(metadata)
                 if results['shape'][0] == 2 and results['shape'][1] == 2:
@@ -160,7 +160,7 @@ def main():
                 event_darkshot = bool((daq_rec>>17)&1)
                 event_fel      = bool((daq_rec>>18)&1)
                 event_ppicker  = bool((daq_rec>>19)&1)
-# 
+#
                 if not event_darkshot:
                     results['laser_on'] = event_laser
 
@@ -174,7 +174,7 @@ def main():
 #                    if event_ppicker:
 #                        results['number_of_spots'] = 50
 #                        results['is_hit_frame'] = True
- 
+
                 double_pixels = results.get('double_pixels', "mask")
 
                 pedestal_file_name = metadata.get("pedestal_name", None)
@@ -190,12 +190,12 @@ def main():
                 # pedestal file is not in stream, skip this frame
                 if ju_stream_adapter.handler.pedestal_file is None or ju_stream_adapter.handler.pedestal_file == "":
                     continue
- 
+
                 data=np.ascontiguousarray(data)
 
-                # starting from ju 3.3.1 pedestal file is cached in library, re-calculated only if parameters(and/or pedestal file) are changed 
+                # starting from ju 3.3.1 pedestal file is cached in library, re-calculated only if parameters(and/or pedestal file) are changed
                 id_pixel_mask_1 = id(pixel_mask_corrected)
-                pixel_mask_corrected=ju_stream_adapter.handler.get_pixel_mask(geometry=True, gap_pixels=True, double_pixels=double_pixels) 
+                pixel_mask_corrected=ju_stream_adapter.handler.get_pixel_mask(geometry=True, gap_pixels=True, double_pixels=double_pixels)
                 id_pixel_mask_2 = id(pixel_mask_corrected)
 
                 if id_pixel_mask_1 != id_pixel_mask_2:
@@ -206,14 +206,14 @@ def main():
                         pixel_mask_pf = np.ascontiguousarray(pixel_mask_corrected).astype(np.int8, copy=False)
 
                     else:
-                        pixel_mask_pf = None 
+                        pixel_mask_pf = None
 #
                 disabled_modules = results.get("disabled_modules", [])
 
 # add additional mask at the edge of modules for JF06T08
                 apply_additional_mask = (results.get("apply_additional_mask", 0) == 1)
                 if detector == "JF06T08V04" and apply_additional_mask:
-                    # edge pixels 
+                    # edge pixels
                     pixel_mask_pf[67:1097,1063] = 0
                     pixel_mask_pf[0:1030, 1100] = 0
 
@@ -232,7 +232,7 @@ def main():
                     pixel_mask_pf[67:1097, 550] = 0
 
                     pixel_mask_pf[0:1030, 1650] = 0
- 
+
                     pixel_mask_pf[0:1030, 1613] = 0
 
                     pixel_mask_pf[1106, 68:582] = 0
@@ -267,7 +267,7 @@ def main():
                 if detector == "JF17T16V01" and apply_additional_mask:
                     # mask module 11
                     pixel_mask_pf[2619:3333,1577:2607] = 0
- 
+
                 if pixel_mask_corrected is not None:
                     data_s = copy(image)
                     saturated_pixels_coordinates = ju_stream_adapter.handler.get_saturated_pixels(data_s, mask=True, geometry=True, gap_pixels=True, double_pixels=double_pixels)
@@ -277,7 +277,7 @@ def main():
 
 # pump probe analysis
                 do_radial_integration = results.get("do_radial_integration", 0)
-        
+
                 if (do_radial_integration != 0):
 
                     data_copy_1 = np.copy(data)
@@ -290,9 +290,9 @@ def main():
                     if r_radial_integration is None:
                         r_radial_integration, nr_radial_integration = prepare_radial_profile(data_copy_1, center_radial_integration, keep_pixels)
                         r_min_max = [int(np.min(r_radial_integration)), int(np.max(r_radial_integration))+1]
- 
 
-                    apply_threshold = results.get('apply_threshold', 0) 
+
+                    apply_threshold = results.get('apply_threshold', 0)
 
                     if (apply_threshold != 0) and all ( k in results for k in ('threshold_min', 'threshold_max')):
                         threshold_min = float(results['threshold_min'])
@@ -305,11 +305,11 @@ def main():
 
                     silent_region_min = results.get("radial_integration_silent_min", None)
                     silent_region_max = results.get("radial_integration_silent_max", None)
-           
-                    if ( silent_region_min is not None and silent_region_max is not None and 
-                         silent_region_max > silent_region_min and 
+
+                    if ( silent_region_min is not None and silent_region_max is not None and
+                         silent_region_max > silent_region_min and
                          silent_region_min > r_min_max[0] and silent_region_max < r_min_max[1] ):
- 
+
                         integral_silent_region = np.sum(rp[silent_region_min:silent_region_max])
                         rp = rp/integral_silent_region
                         results['radint_normalised'] = [silent_region_min, silent_region_max]
@@ -352,7 +352,7 @@ def main():
                         for iRoi in range(len(roi_x1)):
                             data_roi = np.copy(d[roi_y1[iRoi]:roi_y2[iRoi],roi_x1[iRoi]:roi_x2[iRoi]])
 
-                            roi_results[iRoi] = np.nansum(data_roi) 
+                            roi_results[iRoi] = np.nansum(data_roi)
                             if threshold_value_choice == "NaN":
                                 roi_results_normalised[iRoi] = roi_results[iRoi]/((roi_y2[iRoi]-roi_y1[iRoi])*(roi_x2[iRoi]-roi_x1[iRoi]))
                             else:
@@ -377,7 +377,7 @@ def main():
                         if results['roi_intensities_normalised'][1] >= results['spi_limit'][1]:
                             number_of_spots += 50
 
-                        results['number_of_spots'] = number_of_spots 
+                        results['number_of_spots'] = number_of_spots
                         if number_of_spots > 0:
                             results['is_hit_frame'] = True
 

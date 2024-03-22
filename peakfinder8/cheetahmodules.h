@@ -16,7 +16,7 @@ int killNearbyPeaks(tPeakList*, float );
 
 #include <stdint.h>
 // from detectorObject.h file
-//-------------------------------------------------------------------------------------------------------------------- 
+//--------------------------------------------------------------------------------------------------------------------
 /*
  * Bits for pixel masks
  * Oriented along conventions defined for CXI file format ( https://github.com/FilipeMaia/CXI/raw/master/cxi_file_format.pdf )

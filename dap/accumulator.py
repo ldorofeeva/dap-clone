@@ -14,14 +14,14 @@ def main():
     parser.add_argument("--accumulator_port", default=13002, type=int, help="accumulator port")
 
     args = parser.parse_args()
-    
+
     FA_HOST_ACCUMULATE    = args.accumulator
     FA_PORT_ACCUMULATE    = args.accumulator_port
 
     zmq_context = zmq.Context(io_threads=4)
     poller = zmq.Poller()
 
-# Accumulator 
+# Accumulator
     if True:
         accumulator_socket = zmq_context.socket(zmq.PULL)
         accumulator_socket.bind('tcp://*:%s' % FA_PORT_ACCUMULATE )
@@ -42,7 +42,7 @@ def main():
             if accumulator_socket in events:
                 results = accumulator_socket.recv_json(flags)
                 n_frames_received += 1
-               
+
                 pulse_id = results.get('pulse_id', 0)
                 run_name = str(pulse_id//10000*10000)
                 detector = results.get('detector_name', "")
