@@ -11,7 +11,7 @@ import zmq
 from peakfinder8_extension import peakfinder_8
 
 
-flags = 0
+FLAGS = 0
 
 
 def radial_profile(data, r, nr, keep_pixels=None):
@@ -130,8 +130,8 @@ def main():
             events = dict(poller.poll(2000)) # check every 2 seconds in each worker
             if backend_socket in events:
 
-                metadata = backend_socket.recv_json(flags)
-                image = backend_socket.recv(flags, copy=False, track=False)
+                metadata = backend_socket.recv_json(FLAGS)
+                image = backend_socket.recv(FLAGS, copy=False, track=False)
                 image = np.frombuffer(image, dtype=metadata['type']).reshape(metadata['shape'])
 
                 results = copy(metadata)
@@ -463,28 +463,28 @@ def main():
 
                 frame_number = metadata['frame']
 #
-                accumulator_socket.send_json(results, flags)
+                accumulator_socket.send_json(results, FLAGS)
 
                 if (apply_aggregation != 0 ) and 'aggregation_max' in results:
                     if forceSendVisualisation:
-                        visualisation_socket.send_json(results, flags | zmq.SNDMORE)
-                        visualisation_socket.send(data, flags, copy=True, track=True)
+                        visualisation_socket.send_json(results, FLAGS | zmq.SNDMORE)
+                        visualisation_socket.send(data, FLAGS, copy=True, track=True)
                     else:
                         data = np.empty((2,2), dtype=np.uint16)
                         results['type']  = str(data.dtype)
                         results['shape'] = data.shape
-                        visualisation_socket.send_json(results, flags | zmq.SNDMORE)
-                        visualisation_socket.send(data, flags, copy=True, track=True)
+                        visualisation_socket.send_json(results, FLAGS | zmq.SNDMORE)
+                        visualisation_socket.send(data, FLAGS, copy=True, track=True)
                 else:
                     if results['is_good_frame'] and (results['is_hit_frame'] or randint(1, skip_frames_rate) == 1):
-                        visualisation_socket.send_json(results, flags | zmq.SNDMORE)
-                        visualisation_socket.send(data, flags, copy=True, track=True)
+                        visualisation_socket.send_json(results, FLAGS | zmq.SNDMORE)
+                        visualisation_socket.send(data, FLAGS, copy=True, track=True)
                     else:
                         data = np.empty((2,2), dtype=np.uint16)
                         results['type']  = str(data.dtype)
                         results['shape'] = data.shape
-                        visualisation_socket.send_json(results, flags | zmq.SNDMORE)
-                        visualisation_socket.send(data, flags, copy=True, track=True)
+                        visualisation_socket.send_json(results, FLAGS | zmq.SNDMORE)
+                        visualisation_socket.send(data, FLAGS, copy=True, track=True)
 
 
 
