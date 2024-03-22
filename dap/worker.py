@@ -148,7 +148,7 @@ def main():
             daq_rec = results.get("daq_rec",0)
             event_laser    = bool((daq_rec >> 16) & 1)
             event_darkshot = bool((daq_rec >> 17) & 1)
-            event_fel      = bool((daq_rec >> 18) & 1)
+#            event_fel      = bool((daq_rec >> 18) & 1)
             event_ppicker  = bool((daq_rec >> 19) & 1)
 
             if not event_darkshot:
@@ -169,7 +169,6 @@ def main():
 
             pedestal_file_name = metadata.get("pedestal_name", None)
             if pedestal_file_name is not None and pedestal_file_name != pedestal_file_name_saved:
-                n_corner_pixels_mask = results.get("n_corner_pixels_mask", 0)
                 pixel_mask_current = ju_stream_adapter.handler.pixel_mask
                 ju_stream_adapter.handler.pixel_mask = pixel_mask_current
                 pedestal_file_name_saved = pedestal_file_name
@@ -196,8 +195,6 @@ def main():
 
                 else:
                     pixel_mask_pf = None
-
-            disabled_modules = results.get("disabled_modules", [])
 
 # add additional mask at the edge of modules for JF06T08
             apply_additional_mask = (results.get("apply_additional_mask", 0) == 1)
@@ -299,7 +296,7 @@ def main():
                     silent_region_min is not None and
                     silent_region_max is not None and
                     silent_region_max > silent_region_min and
-                    silent_region_min > r_min_max[0] and 
+                    silent_region_min > r_min_max[0] and
                     silent_region_max < r_min_max[1]
                 ):
 
@@ -465,7 +462,6 @@ def main():
             results["type"]  = str(data.dtype)
             results["shape"] = data.shape
 
-            frame_number = metadata["frame"]
 
             accumulator_socket.send_json(results, FLAGS)
 
