@@ -1,6 +1,7 @@
-import zmq
-import os
 import argparse
+import os
+
+import zmq
 
 flags = 0
 

@@ -1,16 +1,16 @@
+import argparse
+import json
+import os
 from copy import copy
+from datetime import datetime
+from math import exp
+from random import gauss, randint
+from time import sleep, time
+
+import jungfrau_utils as ju
 import numpy as np
 import zmq
-from time import time, sleep
-from datetime import datetime
-import os
-import argparse
-from random import randint, gauss
-from math import exp
-import json
-
 from peakfinder8_extension import peakfinder_8
-import jungfrau_utils as ju
 
 flags = 0
 
