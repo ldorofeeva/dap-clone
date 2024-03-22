@@ -145,7 +145,7 @@ def main():
             results["number_of_spots"] = 0
             results["is_hit_frame"] = False
 
-            daq_rec = results.get("daq_rec",0)
+            daq_rec = results.get("daq_rec", 0)
             event_laser    = bool((daq_rec >> 16) & 1)
             event_darkshot = bool((daq_rec >> 17) & 1)
 #            event_fel      = bool((daq_rec >> 18) & 1)
@@ -155,7 +155,7 @@ def main():
                 results["laser_on"] = event_laser
 
 # Filter only ppicker events, if requested; skipping all other events
-            select_only_ppicker_events = results.get("select_only_ppicker_events", 0)
+            select_only_ppicker_events = results.get("select_only_ppicker_events", False)
             if select_only_ppicker_events and not event_ppicker:
                 continue
 
@@ -197,7 +197,7 @@ def main():
                     pixel_mask_pf = None
 
 # add additional mask at the edge of modules for JF06T08
-            apply_additional_mask = (results.get("apply_additional_mask", 0) == 1)
+            apply_additional_mask = results.get("apply_additional_mask", False)
             if detector == "JF06T08V04" and apply_additional_mask:
                 # edge pixels
                 pixel_mask_pf[67:1097,1063] = 0
@@ -262,9 +262,9 @@ def main():
                 results["saturated_pixels_y"] = saturated_pixels_coordinates[0].tolist()
 
 # pump probe analysis
-            do_radial_integration = results.get("do_radial_integration", 0)
+            do_radial_integration = results.get("do_radial_integration", False)
 
-            if do_radial_integration != 0:
+            if do_radial_integration:
 
                 data_copy_1 = np.copy(data)
 
@@ -278,9 +278,9 @@ def main():
                     r_min_max = [int(np.min(r_radial_integration)), int(np.max(r_radial_integration)) + 1]
 
 
-                apply_threshold = results.get("apply_threshold", 0)
+                apply_threshold = results.get("apply_threshold", False)
 
-                if apply_threshold != 0 and all(k in results for k in ("threshold_min", "threshold_max")):
+                if apply_threshold and all(k in results for k in ("threshold_min", "threshold_max")):
                     threshold_min = float(results["threshold_min"])
                     threshold_max = float(results["threshold_max"])
                     data_copy_1[data_copy_1 < threshold_min] = np.nan
@@ -314,10 +314,10 @@ def main():
             if pixel_mask_pf is not None:
                 d[pixel_mask_pf != 1] = np.nan
 
-            apply_threshold = results.get("apply_threshold", 0)
+            apply_threshold = results.get("apply_threshold", False)
             threshold_value_choice = results.get("threshold_value", "NaN")
             threshold_value = 0 if threshold_value_choice == "0" else np.nan
-            if apply_threshold != 0 and all(k in results for k in ("threshold_min", "threshold_max")):
+            if apply_threshold and all(k in results for k in ("threshold_min", "threshold_max")):
                 threshold_min = float(results["threshold_min"])
                 threshold_max = float(results["threshold_max"])
                 d[d < threshold_min] = threshold_value
@@ -355,9 +355,9 @@ def main():
                     results["roi_intensities_normalised"] = [float(r) for r in roi_results_normalised ]
 
 # SPI analysis
-            do_spi_analysis = results.get("do_spi_analysis", 0)
+            do_spi_analysis = results.get("do_spi_analysis", False)
 
-            if (do_spi_analysis != 0) and "roi_intensities_normalised" in results and len(results["roi_intensities_normalised"]) >= 2:
+            if do_spi_analysis and "roi_intensities_normalised" in results and len(results["roi_intensities_normalised"]) >= 2:
 
                 if "spi_limit" in results and len(results["spi_limit"]) == 2:
 
@@ -372,8 +372,8 @@ def main():
                         results["is_hit_frame"] = True
 
 # in case all needed parameters are present, make peakfinding
-            do_peakfinder_analysis = results.get("do_peakfinder_analysis", 0)
-            if do_peakfinder_analysis != 0 and pixel_mask_pf is not None and all(k in results for k in ("beam_center_x", "beam_center_y", "hitfinder_min_snr", "hitfinder_min_pix_count", "hitfinder_adc_thresh")):
+            do_peakfinder_analysis = results.get("do_peakfinder_analysis", False)
+            if do_peakfinder_analysis and pixel_mask_pf is not None and all(k in results for k in ("beam_center_x", "beam_center_y", "hitfinder_min_snr", "hitfinder_min_pix_count", "hitfinder_adc_thresh")):
                 x_beam = results["beam_center_x"] - 0.5 # to coordinates where position of first pixel/point is 0.5, 0.5
                 y_beam = results["beam_center_y"] - 0.5 # to coordinates where position of first pixel/point is 0.5, 0.5
                 hitfinder_min_snr = results["hitfinder_min_snr"]
@@ -430,19 +430,19 @@ def main():
 
             forceSendVisualisation = False
             if data.dtype != np.uint16:
-                apply_threshold = results.get("apply_threshold", 0)
-                apply_aggregation = results.get("apply_aggregation", 0)
-                if apply_aggregation == 0:
+                apply_threshold = results.get("apply_threshold", False)
+                apply_aggregation = results.get("apply_aggregation", False)
+                if not apply_aggregation:
                     data_summed = None
                     n_aggregated_images = 1
-                if apply_threshold != 0 or apply_aggregation != 0:
-                    if apply_threshold != 0 and all(k in results for k in ("threshold_min", "threshold_max")):
+                if apply_threshold or apply_aggregation:
+                    if apply_threshold and all(k in results for k in ("threshold_min", "threshold_max")):
                         threshold_min = float(results["threshold_min"])
                         threshold_max = float(results["threshold_max"])
                         data[data < threshold_min] = 0.0
                         if threshold_max > threshold_min:
                             data[data > threshold_max] = 0.0
-                    if (apply_aggregation != 0 ) and "aggregation_max" in results:
+                    if apply_aggregation and "aggregation_max" in results:
                         if data_summed is not None:
                             data += data_summed
                             n_aggregated_images += 1
@@ -465,7 +465,7 @@ def main():
 
             accumulator_socket.send_json(results, FLAGS)
 
-            if (apply_aggregation != 0 ) and "aggregation_max" in results:
+            if apply_aggregation and "aggregation_max" in results:
                 if forceSendVisualisation:
                     visualisation_socket.send_json(results, FLAGS | zmq.SNDMORE)
                     visualisation_socket.send(data, FLAGS, copy=True, track=True)
