@@ -37,24 +37,24 @@ def prepare_radial_profile(data, center, keep_pixels=None):
 def main():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--backend", default=None, help="backend address")
-    parser.add_argument("--accumulator", default="localhost", help="name of host where accumulator works")
-    parser.add_argument("--accumulator_port", default=13002, type=int, help="accumulator port")
-    parser.add_argument("--visualisation", default="localhost", help="name of host where visualisation works")
-    parser.add_argument("--visualisation_port", default=13002, type=int, help="visualisation port")
+    parser.add_argument("--backend_address", default=None)
+    parser.add_argument("--accumulator_host", default="localhost")
+    parser.add_argument("--accumulator_port", default=13002, type=int)
+    parser.add_argument("--visualisation_host", default="localhost")
+    parser.add_argument("--visualisation_port", default=13002, type=int)
     parser.add_argument("--peakfinder_parameters", default=None, help="json file with peakfinder parameters")
     parser.add_argument("--skip_frames_rate", default=1, type=int, help="send to streamvis each of skip_frames_rate frames")
 
     clargs = parser.parse_args()
 
-    if clargs.backend:
-        BACKEND_ADDRESS = clargs.backend
+    if clargs.backend_address:
+        BACKEND_ADDRESS = clargs.backend_address
     else:
         raise SystemExit("no backend address defined")
 
-    FA_HOST_ACCUMULATE    = clargs.accumulator
+    FA_HOST_ACCUMULATE    = clargs.accumulator_host
     FA_PORT_ACCUMULATE    = clargs.accumulator_port
-    FA_HOST_VISUALISATION = clargs.visualisation
+    FA_HOST_VISUALISATION = clargs.visualisation_host
     FA_PORT_VISUALISATION = clargs.visualisation_port
 
     skip_frames_rate = clargs.skip_frames_rate
