@@ -30,24 +30,28 @@ def main():
 
     clargs = parser.parse_args()
 
-    if clargs.backend_address:
-        BACKEND_ADDRESS = clargs.backend_address
-    else:
-        raise SystemExit("no backend address defined")
+    if not clargs.backend_address:
+        raise SystemExit("please provide a backend address")
 
-    FA_HOST_ACCUMULATE    = clargs.accumulator_host
-    FA_PORT_ACCUMULATE    = clargs.accumulator_port
-    FA_HOST_VISUALISATION = clargs.visualisation_host
-    FA_PORT_VISUALISATION = clargs.visualisation_port
+    work(
+        clargs.backend_address,
+        clargs.accumulator_host,
+        clargs.accumulator_port,
+        clargs.visualisation_host,
+        clargs.visualisation_port,
+        clargs.peakfinder_parameters,
+        clargs.skip_frames_rate
+    )
 
-    skip_frames_rate = clargs.skip_frames_rate
 
+
+def work(backend_address, accumulator_host, accumulator_port, visualisation_host, visualisation_port, peakfinder_parameters, skip_frames_rate):
     peakfinder_parameters = {}
     peakfinder_parameters_time = -1
-    if clargs.peakfinder_parameters is not None and os.path.exists(clargs.peakfinder_parameters):
-        with open(clargs.peakfinder_parameters, "r") as read_file:
+    if peakfinder_parameters is not None and os.path.exists(peakfinder_parameters):
+        with open(peakfinder_parameters, "r") as read_file:
             peakfinder_parameters = json.load(read_file)
-        peakfinder_parameters_time = os.path.getmtime(clargs.peakfinder_parameters)
+        peakfinder_parameters_time = os.path.getmtime(peakfinder_parameters)
 
     pulseid = 0
 
@@ -61,15 +65,15 @@ def main():
 
 # receive from backend:
     backend_socket = zmq_context.socket(zmq.PULL)
-    backend_socket.connect(BACKEND_ADDRESS)
+    backend_socket.connect(backend_address)
 
     poller.register(backend_socket, zmq.POLLIN)
 
     accumulator_socket = zmq_context.socket(zmq.PUSH)
-    accumulator_socket.connect(f"tcp://{FA_HOST_ACCUMULATE}:{FA_PORT_ACCUMULATE}")
+    accumulator_socket.connect(f"tcp://{accumulator_host}:{accumulator_port}")
 
     visualisation_socket = zmq_context.socket(zmq.PUB)
-    visualisation_socket.connect(f"tcp://{FA_HOST_VISUALISATION}:{FA_PORT_VISUALISATION}")
+    visualisation_socket.connect(f"tcp://{visualisation_host}:{visualisation_port}")
 
 # in case of problem with communication to visualisation, keep in 0mq buffer only few messages
     visualisation_socket.set_hwm(10)
@@ -93,11 +97,11 @@ def main():
 # check if peakfinder parameters changed and then re-read it
         try:
             if peakfinder_parameters_time > 0:
-                new_time = os.path.getmtime(clargs.peakfinder_parameters)
+                new_time = os.path.getmtime(peakfinder_parameters)
                 if ( new_time - peakfinder_parameters_time ) > 2.0:
                     old_peakfinder_parameters = peakfinder_parameters
                     sleep(0.5)
-                    with open(clargs.peakfinder_parameters, "r") as read_file:
+                    with open(peakfinder_parameters, "r") as read_file:
                         peakfinder_parameters = json.load(read_file)
                     peakfinder_parameters_time = new_time
                     center_radial_integration = None
