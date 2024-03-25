@@ -98,7 +98,8 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         try:
             if peakfinder_parameters_time > 0:
                 new_time = os.path.getmtime(peakfinder_parameters)
-                if ( new_time - peakfinder_parameters_time ) > 2.0:
+                time_delta = new_time - peakfinder_parameters_time
+                if time_delta > 2.0:
                     old_peakfinder_parameters = peakfinder_parameters
                     sleep(0.5)
                     with open(peakfinder_parameters, "r") as read_file:
