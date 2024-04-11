@@ -10,7 +10,7 @@ import numpy as np
 import zmq
 from peakfinder8_extension import peakfinder_8
 
-from .algos import prepare_radial_profile, radial_profile
+from algos import prepare_radial_profile, radial_profile
 
 
 FLAGS = 0
@@ -45,13 +45,13 @@ def main():
 
 
 
-def work(backend_address, accumulator_host, accumulator_port, visualisation_host, visualisation_port, peakfinder_parameters, skip_frames_rate):
+def work(backend_address, accumulator_host, accumulator_port, visualisation_host, visualisation_port, fn_peakfinder_parameters, skip_frames_rate):
     peakfinder_parameters = {}
     peakfinder_parameters_time = -1
-    if peakfinder_parameters is not None and os.path.exists(peakfinder_parameters):
-        with open(peakfinder_parameters, "r") as read_file:
+    if fn_peakfinder_parameters is not None and os.path.exists(fn_peakfinder_parameters):
+        with open(fn_peakfinder_parameters, "r") as read_file:
             peakfinder_parameters = json.load(read_file)
-        peakfinder_parameters_time = os.path.getmtime(peakfinder_parameters)
+        peakfinder_parameters_time = os.path.getmtime(fn_peakfinder_parameters)
 
     pulseid = 0
 
