@@ -97,12 +97,12 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 # check if peakfinder parameters changed and then re-read it
         try:
             if peakfinder_parameters_time > 0:
-                new_time = os.path.getmtime(peakfinder_parameters)
+                new_time = os.path.getmtime(fn_peakfinder_parameters)
                 time_delta = new_time - peakfinder_parameters_time
                 if time_delta > 2.0:
                     old_peakfinder_parameters = peakfinder_parameters
                     sleep(0.5)
-                    with open(peakfinder_parameters, "r") as read_file:
+                    with open(fn_peakfinder_parameters, "r") as read_file:
                         peakfinder_parameters = json.load(read_file)
                     peakfinder_parameters_time = new_time
                     center_radial_integration = None
