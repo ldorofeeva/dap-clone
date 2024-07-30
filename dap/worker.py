@@ -7,7 +7,7 @@ from time import sleep
 import jungfrau_utils as ju
 import numpy as np
 
-from algos import calc_radial_integration, calc_apply_additional_mask, calc_peakfinder_analysis, calc_spi_analysis
+from algos import calc_radial_integration, calc_apply_additional_mask, calc_peakfinder_analysis, calc_spi_analysis, calc_roi
 from zmqsocks import ZMQSockets
 from utils import json_load, read_bit
 
@@ -202,28 +202,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         roi_y2 = results.get("roi_y2", [])
 
         if len(roi_x1) > 0 and len(roi_x1) == len(roi_x2) and len(roi_x1) == len(roi_y1) and len(roi_x1) == len(roi_y2):
-            roi_results = [0] * len(roi_x1)
-            roi_results_normalised = [0] * len(roi_x1)
-
-            if pixel_mask_pf is not None:
-
-                results["roi_intensities_x"] = []
-                results["roi_intensities_proj_x"] = []
-
-                for iRoi in range(len(roi_x1)):
-                    data_roi = np.copy(pfdata[roi_y1[iRoi]:roi_y2[iRoi], roi_x1[iRoi]:roi_x2[iRoi]])
-
-                    roi_results[iRoi] = np.nansum(data_roi)
-                    if threshold_value_choice == "NaN":
-                        roi_results_normalised[iRoi] = roi_results[iRoi] / ((roi_y2[iRoi] - roi_y1[iRoi]) * (roi_x2[iRoi] - roi_x1[iRoi]))
-                    else:
-                        roi_results_normalised[iRoi] = np.nanmean(data_roi)
-
-                    results["roi_intensities_x"].append([roi_x1[iRoi], roi_x2[iRoi]])
-                    results["roi_intensities_proj_x"].append(np.nansum(data_roi, axis=0).tolist())
-
-                results["roi_intensities"] = [float(r) for r in roi_results]
-                results["roi_intensities_normalised"] = [float(r) for r in roi_results_normalised ]
+            calc_roi(results, pfdata, roi_x1, roi_x2, roi_y1, roi_y2, pixel_mask_pf, threshold_value_choice)
 
 # SPI analysis
         do_spi_analysis = results.get("do_spi_analysis", False)
