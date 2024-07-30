@@ -5,14 +5,14 @@ import numpy as np
 from peakfinder8_extension import peakfinder_8
 
 
-def calc_peakfinder_analysis(results, pfdata, pixel_mask_pf):
+def calc_peakfinder_analysis(results, data, pixel_mask_pf):
     x_beam = results["beam_center_x"] - 0.5 # to coordinates where position of first pixel/point is 0.5, 0.5
     y_beam = results["beam_center_y"] - 0.5 # to coordinates where position of first pixel/point is 0.5, 0.5
     hitfinder_min_snr = results["hitfinder_min_snr"]
     hitfinder_min_pix_count = int(results["hitfinder_min_pix_count"])
     hitfinder_adc_thresh = results["hitfinder_adc_thresh"]
 
-    asic_ny, asic_nx = pfdata.shape
+    asic_ny, asic_nx = data.shape
     nasics_y, nasics_x = 1, 1
     hitfinder_max_pix_count = 100
     max_num_peaks = 10000
@@ -23,12 +23,12 @@ def calc_peakfinder_analysis(results, pfdata, pixel_mask_pf):
     # in case of further modification with the mask, make a new one, independent from real mask
     maskPr = np.copy(pixel_mask_pf)
 
-    y, x = np.indices(pfdata.shape)
+    y, x = np.indices(data.shape)
     pix_r = np.sqrt((x-x_beam)**2 + (y-y_beam)**2)
 
     peak_list_x, peak_list_y, peak_list_value = peakfinder_8(
         max_num_peaks,
-        pfdata.astype(np.float32),
+        data.astype(np.float32),
         maskPr.astype(np.int8),
         pix_r.astype(np.float32),
         asic_nx, asic_ny,
