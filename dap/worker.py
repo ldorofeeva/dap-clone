@@ -206,7 +206,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
 # SPI analysis
         do_spi_analysis = results.get("do_spi_analysis", False)
-        if do_spi_analysis and "roi_intensities_normalised" in results and len(results["roi_intensities_normalised"]) >= 2:
+        if do_spi_analysis:
             calc_spi_analysis(results)
 
 # in case all needed parameters are present, make peakfinding
