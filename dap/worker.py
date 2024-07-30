@@ -13,10 +13,6 @@ from algos import calc_radial_integration, calc_apply_additional_mask
 from zmqsocks import ZMQSockets
 
 
-FLAGS = 0
-
-
-
 def main():
     parser = argparse.ArgumentParser()
 
