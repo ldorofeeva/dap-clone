@@ -364,24 +364,21 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
         if apply_aggregation and "aggregation_max" in results:
             if forceSendVisualisation:
-                visualisation_socket.send_json(results, FLAGS | zmq.SNDMORE)
-                visualisation_socket.send(data, FLAGS, copy=True, track=True)
+                pass
             else:
                 data = np.empty((2, 2), dtype=np.uint16)
                 results["type"]  = str(data.dtype)
                 results["shape"] = data.shape
-                visualisation_socket.send_json(results, FLAGS | zmq.SNDMORE)
-                visualisation_socket.send(data, FLAGS, copy=True, track=True)
         else:
             if results["is_good_frame"] and (results["is_hit_frame"] or randint(1, skip_frames_rate) == 1):
-                visualisation_socket.send_json(results, FLAGS | zmq.SNDMORE)
-                visualisation_socket.send(data, FLAGS, copy=True, track=True)
+                pass
             else:
                 data = np.empty((2, 2), dtype=np.uint16)
                 results["type"]  = str(data.dtype)
                 results["shape"] = data.shape
-                visualisation_socket.send_json(results, FLAGS | zmq.SNDMORE)
-                visualisation_socket.send(data, FLAGS, copy=True, track=True)
+
+        visualisation_socket.send_json(results, FLAGS | zmq.SNDMORE)
+        visualisation_socket.send(data, FLAGS, copy=True, track=True)
 
 
 
