@@ -2,11 +2,11 @@ import numpy as np
 
 
 def calc_roi(results, pfdata, roi_x1, roi_x2, roi_y1, roi_y2, pixel_mask_pf, threshold_value_choice):
-    roi_results = [0] * len(roi_x1)
-    roi_results_normalised = [0] * len(roi_x1)
-
     if pixel_mask_pf is None:
         return
+
+    roi_results = [0] * len(roi_x1)
+    roi_results_normalised = [0] * len(roi_x1)
 
     results["roi_intensities_x"] = []
     results["roi_intensities_proj_x"] = []
