@@ -7,7 +7,7 @@ from time import sleep
 import jungfrau_utils as ju
 import numpy as np
 
-from algos import calc_radial_integration, calc_apply_additional_mask, calc_peakfinder_analysis
+from algos import calc_radial_integration, calc_apply_additional_mask, calc_peakfinder_analysis, calc_spi_analysis
 from zmqsocks import ZMQSockets
 from utils import json_load, read_bit
 
@@ -227,20 +227,8 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
 # SPI analysis
         do_spi_analysis = results.get("do_spi_analysis", False)
-
         if do_spi_analysis and "roi_intensities_normalised" in results and len(results["roi_intensities_normalised"]) >= 2:
-
-            if "spi_limit" in results and len(results["spi_limit"]) == 2:
-
-                number_of_spots = 0
-                if results["roi_intensities_normalised"][0] >= results["spi_limit"][0]:
-                    number_of_spots += 25
-                if results["roi_intensities_normalised"][1] >= results["spi_limit"][1]:
-                    number_of_spots += 50
-
-                results["number_of_spots"] = number_of_spots
-                if number_of_spots > 0:
-                    results["is_hit_frame"] = True
+            calc_spi_analysis(results)
 
 # in case all needed parameters are present, make peakfinding
         do_peakfinder_analysis = results.get("do_peakfinder_analysis", False)
