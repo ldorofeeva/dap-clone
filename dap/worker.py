@@ -255,7 +255,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
                         data += data_summed
                         n_aggregated_images += 1
                     data_summed = data.copy()
-                    data_summed[data == -np.nan] = -np.nan
+                    data_summed[data == -np.nan] = -np.nan #TODO: this does nothing
                     results["aggregated_images"] = n_aggregated_images
                     results["worker"] = worker
                     if n_aggregated_images >= results["aggregation_max"]:
