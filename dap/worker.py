@@ -180,11 +180,11 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
 
     #copy image to work with peakfinder, just in case
-        d = np.copy(data)
+        pfdata = np.copy(data)
 
     # make all masked pixels values nans
         if pixel_mask_pf is not None:
-            d[pixel_mask_pf != 1] = np.nan
+            pfdata[pixel_mask_pf != 1] = np.nan
 
         apply_threshold = results.get("apply_threshold", False)
         threshold_value_choice = results.get("threshold_value", "NaN")
@@ -192,9 +192,9 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         if apply_threshold and all(k in results for k in ("threshold_min", "threshold_max")):
             threshold_min = float(results["threshold_min"])
             threshold_max = float(results["threshold_max"])
-            d[d < threshold_min] = threshold_value
+            pfdata[pfdata < threshold_min] = threshold_value
             if threshold_max > threshold_min:
-                d[d > threshold_max] = threshold_value
+                pfdata[pfdata > threshold_max] = threshold_value
 
     # if roi calculation request is present, make it
         roi_x1 = results.get("roi_x1", [])
@@ -212,7 +212,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
                 results["roi_intensities_proj_x"] = []
 
                 for iRoi in range(len(roi_x1)):
-                    data_roi = np.copy(d[roi_y1[iRoi]:roi_y2[iRoi], roi_x1[iRoi]:roi_x2[iRoi]])
+                    data_roi = np.copy(pfdata[roi_y1[iRoi]:roi_y2[iRoi], roi_x1[iRoi]:roi_x2[iRoi]])
 
                     roi_results[iRoi] = np.nansum(data_roi)
                     if threshold_value_choice == "NaN":
@@ -252,7 +252,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
             hitfinder_min_pix_count = int(results["hitfinder_min_pix_count"])
             hitfinder_adc_thresh = results["hitfinder_adc_thresh"]
 
-            asic_ny, asic_nx = d.shape
+            asic_ny, asic_nx = pfdata.shape
             nasics_y, nasics_x = 1, 1
             hitfinder_max_pix_count = 100
             max_num_peaks = 10000
@@ -263,12 +263,12 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
             # in case of further modification with the mask, make a new one, independent from real mask
             maskPr = np.copy(pixel_mask_pf)
 
-            y, x = np.indices(d.shape)
+            y, x = np.indices(pfdata.shape)
             pix_r = np.sqrt((x-x_beam)**2 + (y-y_beam)**2)
 
             peak_list_x, peak_list_y, peak_list_value = peakfinder_8(
                 max_num_peaks,
-                d.astype(np.float32),
+                pfdata.astype(np.float32),
                 maskPr.astype(np.int8),
                 pix_r.astype(np.float32),
                 asic_nx, asic_ny,
