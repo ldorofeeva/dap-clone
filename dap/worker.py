@@ -196,13 +196,9 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
                 pfdata[pfdata > threshold_max] = threshold_value
 
     # if roi calculation request is present, make it
-        roi_x1 = results.get("roi_x1", [])
-        roi_x2 = results.get("roi_x2", [])
-        roi_y1 = results.get("roi_y1", [])
-        roi_y2 = results.get("roi_y2", [])
-
-        if len(roi_x1) > 0 and len(roi_x1) == len(roi_x2) == len(roi_y1) == len(roi_y2):
-            calc_roi(results, pfdata, roi_x1, roi_x2, roi_y1, roi_y2, pixel_mask_pf, threshold_value_choice)
+        do_roi = ("roi_x1" in results)
+        if do_roi:
+            calc_roi(results, pfdata, pixel_mask_pf, threshold_value_choice)
 
 # SPI analysis
         do_spi_analysis = results.get("do_spi_analysis", False)

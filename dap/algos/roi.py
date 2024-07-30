@@ -1,8 +1,23 @@
 import numpy as np
 
 
-def calc_roi(results, data, roi_x1, roi_x2, roi_y1, roi_y2, pixel_mask_pf, threshold_value_choice):
+def calc_roi(results, data, pixel_mask_pf, threshold_value_choice):
     if pixel_mask_pf is None:
+        return
+
+    for k in ("roi_x1", "roi_x2", "roi_y1", "roi_y2"):
+        if k not in results:
+            return
+
+    roi_x1 = results["roi_x1"]
+    roi_x2 = results["roi_x2"]
+    roi_y1 = results["roi_y1"]
+    roi_y2 = results["roi_y2"]
+
+    if len(roi_x1) == 0:
+        return
+
+    if not (len(roi_x1) == len(roi_x2) == len(roi_y1) == len(roi_y2)):
         return
 
     roi_results = [0] * len(roi_x1)
