@@ -211,7 +211,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
 # in case all needed parameters are present, make peakfinding
         do_peakfinder_analysis = results.get("do_peakfinder_analysis", False)
-        if do_peakfinder_analysis and pixel_mask_pf is not None and all(k in results for k in ("beam_center_x", "beam_center_y", "hitfinder_min_snr", "hitfinder_min_pix_count", "hitfinder_adc_thresh")):
+        if do_peakfinder_analysis:
             calc_peakfinder_analysis(results, pfdata, pixel_mask_pf)
 
 # ???

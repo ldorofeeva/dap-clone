@@ -6,6 +6,13 @@ from peakfinder8_extension import peakfinder_8
 
 
 def calc_peakfinder_analysis(results, data, pixel_mask_pf):
+    if pixel_mask_pf is None:
+        return
+
+    for k in ("beam_center_x", "beam_center_y", "hitfinder_min_snr", "hitfinder_min_pix_count", "hitfinder_adc_thresh"):
+        if k not in results:
+            return
+
     x_beam = results["beam_center_x"] - 0.5 # to coordinates where position of first pixel/point is 0.5, 0.5
     y_beam = results["beam_center_y"] - 0.5 # to coordinates where position of first pixel/point is 0.5, 0.5
 
