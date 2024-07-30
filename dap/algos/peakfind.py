@@ -43,12 +43,9 @@ def calc_peakfinder_analysis(results, data, pixel_mask_pf):
 
     number_of_spots = len(peak_list_x)
     results["number_of_spots"] = number_of_spots
-    results["spot_x"] = [-1.0] * number_of_spots
-    results["spot_y"] = [-1.0] * number_of_spots
+    results["spot_x"] = [x + 0.5 for x in peak_list_x]
+    results["spot_y"] = [y + 0.5 for y in peak_list_y]
     results["spot_intensity"] = copy(peak_list_value)
-    for i in range(number_of_spots):
-        results["spot_x"][i] = peak_list_x[i] + 0.5
-        results["spot_y"][i] = peak_list_y[i] + 0.5
 
     npeaks_threshold_hit = results.get("npeaks_threshold_hit", 15)
 
