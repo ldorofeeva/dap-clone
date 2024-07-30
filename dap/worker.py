@@ -1,5 +1,4 @@
 import argparse
-import json
 import os
 from copy import copy
 from random import randint
@@ -11,6 +10,7 @@ from peakfinder8_extension import peakfinder_8
 
 from algos import calc_radial_integration, calc_apply_additional_mask
 from zmqsocks import ZMQSockets
+from utils import json_load, read_bit
 
 
 def main():
@@ -45,8 +45,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
     peakfinder_parameters = {}
     peakfinder_parameters_time = -1
     if fn_peakfinder_parameters is not None and os.path.exists(fn_peakfinder_parameters):
-        with open(fn_peakfinder_parameters, "r") as read_file:
-            peakfinder_parameters = json.load(read_file)
+        peakfinder_parameters = json_load(fn_peakfinder_parameters)
         peakfinder_parameters_time = os.path.getmtime(fn_peakfinder_parameters)
 
     pulseid = 0
@@ -82,8 +81,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
                 if time_delta > 2.0:
                     old_peakfinder_parameters = peakfinder_parameters
                     sleep(0.5)
-                    with open(fn_peakfinder_parameters, "r") as read_file:
-                        peakfinder_parameters = json.load(read_file)
+                    peakfinder_parameters = json_load(fn_peakfinder_parameters)
                     peakfinder_parameters_time = new_time
                     center_radial_integration = None
                     if worker ==  0:
@@ -112,10 +110,10 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         results["is_hit_frame"] = False
 
         daq_rec = results.get("daq_rec", 0)
-        event_laser    = bool((daq_rec >> 16) & 1)
-        event_darkshot = bool((daq_rec >> 17) & 1)
-#        event_fel      = bool((daq_rec >> 18) & 1)
-        event_ppicker  = bool((daq_rec >> 19) & 1)
+        event_laser    = read_bit(daq_rec, 16)
+        event_darkshot = read_bit(daq_rec, 17)
+#        event_fel      = read_bit(daq_rec, 18)
+        event_ppicker  = read_bit(daq_rec, 19)
 
         if not event_darkshot:
             results["laser_on"] = event_laser
