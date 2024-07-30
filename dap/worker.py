@@ -109,7 +109,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
                     if worker ==  0:
                         print(f"({pulseid}) update peakfinder parameters {old_peakfinder_parameters}", flush=True)
                         print(f"                                     --> {peakfinder_parameters}", flush=True)
-                        print("",flush=True)
+                        print(flush=True)
         except Exception as e:
             print(f"({pulseid}) problem ({e}) to read peakfinder parameters file, worker : {worker}", flush=True)
 
@@ -246,7 +246,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
                         roi_results_normalised[iRoi] = np.nanmean(data_roi)
 
                     results["roi_intensities_x"].append([roi_x1[iRoi], roi_x2[iRoi]])
-                    results["roi_intensities_proj_x"].append(np.nansum(data_roi,axis=0).tolist())
+                    results["roi_intensities_proj_x"].append(np.nansum(data_roi, axis=0).tolist())
 
                 results["roi_intensities"] = [float(r) for r in roi_results]
                 results["roi_intensities_normalised"] = [float(r) for r in roi_results_normalised ]
