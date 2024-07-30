@@ -1,4 +1,4 @@
 
-from .radprof import prepare_radial_profile, radial_profile
+from .radprof import calc_radial_integration
 
 
