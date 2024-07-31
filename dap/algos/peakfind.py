@@ -28,16 +28,13 @@ def calc_peakfinder_analysis(results, data, pixel_mask_pf):
     # usually don't need to change this value, rather robust
     hitfinder_local_bg_radius = 20.
 
-    # in case of further modification with the mask, make a new one, independent from real mask
-    maskPr = np.copy(pixel_mask_pf)
-
     y, x = np.indices(data.shape)
     pix_r = np.sqrt((x-x_beam)**2 + (y-y_beam)**2)
 
     peak_list_x, peak_list_y, peak_list_value = peakfinder_8(
         max_num_peaks,
         data.astype(np.float32),
-        maskPr.astype(np.int8),
+        pixel_mask_pf.astype(np.int8),
         pix_r.astype(np.float32),
         asic_nx, asic_ny,
         nasics_x, nasics_y,
