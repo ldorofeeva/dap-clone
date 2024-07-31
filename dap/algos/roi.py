@@ -20,26 +20,37 @@ def calc_roi(results, data, pixel_mask_pf, threshold_value_choice):
     if not (len(roi_x1) == len(roi_x2) == len(roi_y1) == len(roi_y2)):
         return
 
-    roi_results = [0] * len(roi_x1)
-    roi_results_normalised = [0] * len(roi_x1)
+    roi_results = []
+    roi_results_normalised = []
 
-    results["roi_intensities_x"] = []
-    results["roi_intensities_proj_x"] = []
+    roi_intensities_x = []
+    roi_intensities_proj_x = []
 
-    for iRoi in range(len(roi_x1)):
-        data_roi = data[roi_y1[iRoi]:roi_y2[iRoi], roi_x1[iRoi]:roi_x2[iRoi]]
+    for ix1, ix2, iy1, iy2 in zip(roi_x1, roi_x2, roi_y1, roi_y2):
+        data_roi = data[iy1:iy2, ix1:ix2]
 
-        roi_results[iRoi] = np.nansum(data_roi)
+        roi_sum = np.nansum(data_roi)
+        roi_results.append(roi_sum)
+
         if threshold_value_choice == "NaN":
-            roi_results_normalised[iRoi] = roi_results[iRoi] / ((roi_y2[iRoi] - roi_y1[iRoi]) * (roi_x2[iRoi] - roi_x1[iRoi]))
+            roi_area = (y2 - y1) * (x2 - x1)
+            roi_sum_norm = roi_sum / roi_area
         else:
-            roi_results_normalised[iRoi] = np.nanmean(data_roi)
+            roi_sum_norm = np.nanmean(data_roi)
 
-        results["roi_intensities_x"].append([roi_x1[iRoi], roi_x2[iRoi]])
-        results["roi_intensities_proj_x"].append(np.nansum(data_roi, axis=0).tolist())
+        roi_results_normalised.append(roi_sum_norm)
+
+        roi_intensity_x = [x1, x2]
+        roi_intensity_proj_x = np.nansum(data_roi, axis=0).tolist()
+
+        roi_intensities_x.append(roi_intensity_x)
+        roi_intensities_proj_x.append(roi_intensity_proj_x)
 
     results["roi_intensities"] = [float(r) for r in roi_results]
     results["roi_intensities_normalised"] = [float(r) for r in roi_results_normalised]
+
+    results["roi_intensities_x"] = roi_intensities_x
+    results["roi_intensities_proj_x"] = roi_intensities_proj_x
 
 
 
