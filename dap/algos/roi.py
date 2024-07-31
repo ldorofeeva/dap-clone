@@ -46,8 +46,8 @@ def calc_roi(results, data, pixel_mask_pf, threshold_value_choice):
         roi_intensities_x.append(roi_intensity_x)
         roi_intensities_proj_x.append(roi_intensity_proj_x)
 
-    results["roi_intensities"] = [float(r) for r in roi_intensities]
-    results["roi_intensities_normalised"] = [float(r) for r in roi_intensities_normalised]
+    results["roi_intensities"] = roi_intensities
+    results["roi_intensities_normalised"] = roi_intensities_normalised
 
     results["roi_intensities_x"] = roi_intensities_x
     results["roi_intensities_proj_x"] = roi_intensities_proj_x
