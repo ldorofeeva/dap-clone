@@ -33,14 +33,14 @@ def calc_roi(results, data, pixel_mask_pf, threshold_value_choice):
         roi_intensities.append(roi_sum)
 
         if threshold_value_choice == "NaN":
-            roi_area = (y2 - y1) * (x2 - x1)
+            roi_area = (iy2 - iy1) * (ix2 - ix1)
             roi_sum_norm = roi_sum / roi_area
         else:
             roi_sum_norm = np.nanmean(data_roi)
 
         roi_intensities_normalised.append(roi_sum_norm)
 
-        roi_intensity_x = [x1, x2]
+        roi_intensity_x = [ix1, ix2]
         roi_intensity_proj_x = np.nansum(data_roi, axis=0).tolist()
 
         roi_intensities_x.append(roi_intensity_x)
