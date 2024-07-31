@@ -2,7 +2,7 @@ import numpy as np
 
 
 def calc_radial_integration(results, data, keep_pixels, pixel_mask_pf, center_radial_integration, r_radial_integration):
-    data_copy_1 = np.copy(data)
+    data = np.copy(data)
 
     if keep_pixels is None and pixel_mask_pf is not None:
         keep_pixels = (pixel_mask_pf != 0)
@@ -10,7 +10,7 @@ def calc_radial_integration(results, data, keep_pixels, pixel_mask_pf, center_ra
         center_radial_integration = [results["beam_center_x"], results["beam_center_y"]]
         r_radial_integration = None
     if r_radial_integration is None:
-        r_radial_integration, nr_radial_integration = prepare_radial_profile(data_copy_1, center_radial_integration, keep_pixels)
+        r_radial_integration, nr_radial_integration = prepare_radial_profile(data, center_radial_integration, keep_pixels)
         r_min_max = [int(np.min(r_radial_integration)), int(np.max(r_radial_integration)) + 1]
 
 
@@ -19,11 +19,11 @@ def calc_radial_integration(results, data, keep_pixels, pixel_mask_pf, center_ra
     if apply_threshold and all(k in results for k in ("threshold_min", "threshold_max")):
         threshold_min = float(results["threshold_min"])
         threshold_max = float(results["threshold_max"])
-        data_copy_1[data_copy_1 < threshold_min] = np.nan
+        data[data < threshold_min] = np.nan
         if threshold_max > threshold_min:
-            data_copy_1[data_copy_1 > threshold_max] = np.nan
+            data[data > threshold_max] = np.nan
 
-    rp = radial_profile(data_copy_1, r_radial_integration, nr_radial_integration, keep_pixels)
+    rp = radial_profile(data, r_radial_integration, nr_radial_integration, keep_pixels)
 
     silent_region_min = results.get("radial_integration_silent_min", None)
     silent_region_max = results.get("radial_integration_silent_max", None)
