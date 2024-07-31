@@ -29,7 +29,7 @@ def calc_peakfinder_analysis(results, data, pixel_mask_pf):
     hitfinder_local_bg_radius = 20.
 
     y, x = np.indices(data.shape)
-    pix_r = np.sqrt((x-x_beam)**2 + (y-y_beam)**2)
+    pix_r = np.sqrt((x - x_beam)**2 + (y - y_beam)**2)
 
     peak_list_x, peak_list_y, peak_list_value = peakfinder_8(
         max_num_peaks,
