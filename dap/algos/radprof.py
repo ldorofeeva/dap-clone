@@ -25,6 +25,7 @@ def calc_radial_integration(results, data, keep_pixels, pixel_mask_pf, center_ra
         threshold_min = float(results["threshold_min"])
         threshold_max = float(results["threshold_max"])
         data[data < threshold_min] = np.nan
+        #TODO: skipping max is a guess, but not obvious/symmetric -- better to ensure the order min < max by switching them if needed
         if threshold_max > threshold_min:
             data[data > threshold_max] = np.nan
 
@@ -36,6 +37,7 @@ def calc_radial_integration(results, data, keep_pixels, pixel_mask_pf, center_ra
     if (
         silent_region_min is not None and
         silent_region_max is not None and
+        #TODO: skipping entirely is a guess, but not obvious -- better to ensure the order min < max by switching them if needed
         silent_region_max > silent_region_min and
         silent_region_min > r_min and
         silent_region_max < r_max
