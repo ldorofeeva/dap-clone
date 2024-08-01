@@ -13,7 +13,7 @@ def calc_peakfinder_analysis(results, data, pixel_mask_pf):
         if k not in results:
             return
 
-    # to coordinates where position of first pixel/point is 0.5, 0.5
+    # to coordinates where position of first pixel/point is (0.5, 0.5)
     x_beam = results["beam_center_x"] - 0.5
     y_beam = results["beam_center_y"] - 0.5
 
@@ -49,7 +49,7 @@ def calc_peakfinder_analysis(results, data, pixel_mask_pf):
     number_of_spots = len(peak_list_x)
     results["number_of_spots"] = number_of_spots
 
-    # to coordinates where position of first pixel/point is 1, 1
+    # to coordinates where position of first pixel/point is (1, 1)
     results["spot_x"] = [x + 0.5 for x in peak_list_x]
     results["spot_y"] = [y + 0.5 for y in peak_list_y]
     results["spot_intensity"] = copy(peak_list_value) #TODO: why is this copy needed?
