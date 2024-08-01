@@ -7,9 +7,9 @@ from time import sleep
 import jungfrau_utils as ju
 import numpy as np
 
-from algos import calc_radial_integration, calc_apply_additional_mask, calc_peakfinder_analysis, calc_spi_analysis, calc_roi
-from zmqsocks import ZMQSockets
+from algos import calc_apply_additional_mask, calc_peakfinder_analysis, calc_radial_integration, calc_roi, calc_spi_analysis
 from utils import json_load, read_bit
+from zmqsocks import ZMQSockets
 
 
 def main():
