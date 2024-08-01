@@ -1,17 +1,14 @@
 
 def calc_spi_analysis(results):
-    if "spi_limit" not in results:
-        return
+    for k in ("spi_limit", "roi_intensities_normalised"):
+        if k not in results:
+            return
 
     spi_limit = results["spi_limit"]
+    roi_intensities_normalised = results["roi_intensities_normalised"]
 
     if len(spi_limit) != 2:
         return
-
-    if "roi_intensities_normalised" not in results:
-        return
-
-    roi_intensities_normalised = results["roi_intensities_normalised"]
 
     if len(roi_intensities_normalised) < 2:
         return
