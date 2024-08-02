@@ -7,7 +7,7 @@ from time import sleep
 import jungfrau_utils as ju
 import numpy as np
 
-from algos import calc_apply_additional_mask, calc_apply_threshold, calc_peakfinder_analysis, calc_radial_integration, calc_roi, calc_spi_analysis
+from algos import calc_apply_additional_mask, calc_apply_threshold, calc_mask_pixels, calc_peakfinder_analysis, calc_radial_integration, calc_roi, calc_spi_analysis
 from utils import json_load, read_bit
 from zmqsocks import ZMQSockets
 
@@ -180,10 +180,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
     #copy image to work with peakfinder, just in case
         pfdata = np.copy(data)
 
-    # make all masked pixels values nans
-        if pixel_mask_pf is not None:
-            pfdata[pixel_mask_pf != 1] = np.nan #TODO: boolean mask
-
+        calc_mask_pixels(pfdata, pixel_mask_pf) # changes pfdata in place
         calc_apply_threshold(results, pfdata) # changes pfdata in place
         calc_roi(results, pfdata, pixel_mask_pf)
         calc_spi_analysis(results)
