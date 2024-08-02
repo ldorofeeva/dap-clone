@@ -5,7 +5,7 @@ def calc_mask_pixels(data, pixel_mask_pf):
     if pixel_mask_pf is None:
         return
 
-    data[pixel_mask_pf != 1] = np.nan #TODO: boolean mask
+    data[pixel_mask_pf == 0] = np.nan #TODO: boolean mask
 
 
 

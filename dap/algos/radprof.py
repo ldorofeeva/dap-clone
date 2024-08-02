@@ -3,7 +3,7 @@ import numpy as np
 
 def calc_radial_integration(results, data, keep_pixels, pixel_mask_pf, center_radial_integration, r_radial_integration):
     if keep_pixels is None and pixel_mask_pf is not None:
-        keep_pixels = (pixel_mask_pf != 0) #TODO: boolean mask
+        keep_pixels = (pixel_mask_pf == 1) #TODO: boolean mask
 
     if center_radial_integration is None:
         center_radial_integration = [
