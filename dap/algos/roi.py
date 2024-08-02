@@ -2,6 +2,7 @@ import numpy as np
 
 
 def calc_roi(results, data, pixel_mask_pf):
+    #TODO: why is this checked here?
     if pixel_mask_pf is None:
         return
 
