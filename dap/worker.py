@@ -55,7 +55,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 # all the normal workers
     worker = 1
 
-    r_radial_integration = None
+    rad_radial_integration = None
     center_radial_integration = None
 
     results = {}
@@ -143,7 +143,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         id_pixel_mask_2 = id(pixel_mask_corrected)
 
         if id_pixel_mask_1 != id_pixel_mask_2:
-            r_radial_integration = None
+            rad_radial_integration = None
             if pixel_mask_corrected is not None:
                 pixel_mask_pf = np.ascontiguousarray(pixel_mask_corrected)
                 calc_apply_additional_mask(results, pixel_mask_pf) # changes pixel_mask_pf in place
@@ -161,7 +161,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 # pump probe analysis
         do_radial_integration = results.get("do_radial_integration", False)
         if do_radial_integration:
-            center_radial_integration, r_radial_integration = calc_radial_integration(results, data, pixel_mask_pf, center_radial_integration, r_radial_integration)
+            center_radial_integration, rad_radial_integration = calc_radial_integration(results, data, pixel_mask_pf, center_radial_integration, rad_radial_integration)
 
 
     #copy image to work with peakfinder, just in case
