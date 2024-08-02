@@ -160,7 +160,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
                 pixel_mask_pf = None
 
 
-        calc_apply_additional_mask(detector, pixel_mask_pf)
+        calc_apply_additional_mask(results, detector, pixel_mask_pf)
 
 
         if pixel_mask_corrected is not None:

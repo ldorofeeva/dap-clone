@@ -1,6 +1,6 @@
 #TODO: find a better way to handle this
 
-def calc_apply_additional_mask(detector, pixel_mask_pf):
+def calc_apply_additional_mask(results, detector, pixel_mask_pf):
     apply_additional_mask = results.get("apply_additional_mask", False)
     if not apply_additional_mask:
         return
