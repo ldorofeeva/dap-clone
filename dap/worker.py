@@ -152,10 +152,10 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
                 pixel_mask_pf = None
 
         if pixel_mask_corrected is not None:
-            saturated_pixels_coordinates = ju_stream_adapter.handler.get_saturated_pixels(image, double_pixels=double_pixels)
-            results["saturated_pixels"] = len(saturated_pixels_coordinates[0])
-            results["saturated_pixels_x"] = saturated_pixels_coordinates[1].tolist()
-            results["saturated_pixels_y"] = saturated_pixels_coordinates[0].tolist()
+            saturated_pixels_y, saturated_pixels_x = ju_stream_adapter.handler.get_saturated_pixels(image, double_pixels=double_pixels)
+            results["saturated_pixels"] = len(saturated_pixels_x)
+            results["saturated_pixels_x"] = saturated_pixels_x.tolist()
+            results["saturated_pixels_y"] = saturated_pixels_y.tolist()
 
 
 # pump probe analysis
