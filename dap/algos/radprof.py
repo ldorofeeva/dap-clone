@@ -1,10 +1,7 @@
 import numpy as np
 
 
-def calc_radial_integration(results, data, keep_pixels, pixel_mask_pf, center_radial_integration, r_radial_integration):
-    if keep_pixels is None and pixel_mask_pf is not None:
-        keep_pixels = (pixel_mask_pf == 1) #TODO: boolean mask
-
+def calc_radial_integration(results, data, pixel_mask_pf, center_radial_integration, r_radial_integration):
     if center_radial_integration is None:
         center_radial_integration = [
             results["beam_center_x"],
@@ -13,7 +10,7 @@ def calc_radial_integration(results, data, keep_pixels, pixel_mask_pf, center_ra
         r_radial_integration = None
 
     if r_radial_integration is None:
-        r_radial_integration, nr_radial_integration = prepare_radial_profile(data, center_radial_integration, keep_pixels)
+        r_radial_integration, nr_radial_integration = prepare_radial_profile(data, center_radial_integration, keep_pixels=pixel_mask_pf)
         r_min = int(np.min(r_radial_integration))
         r_max = int(np.max(r_radial_integration)) + 1
 
@@ -29,7 +26,7 @@ def calc_radial_integration(results, data, keep_pixels, pixel_mask_pf, center_ra
         if threshold_max > threshold_min:
             data[data > threshold_max] = np.nan
 
-    rp = radial_profile(data, r_radial_integration, nr_radial_integration, keep_pixels)
+    rp = radial_profile(data, r_radial_integration, nr_radial_integration, keep_pixels=pixel_mask_pf)
 
     silent_region_min = results.get("radial_integration_silent_min", None)
     silent_region_max = results.get("radial_integration_silent_max", None)
@@ -50,7 +47,7 @@ def calc_radial_integration(results, data, keep_pixels, pixel_mask_pf, center_ra
     results["radint_I"] = rp[r_min:].tolist()
     results["radint_q"] = [r_min, r_max]
 
-    return keep_pixels, center_radial_integration, r_radial_integration
+    return center_radial_integration, r_radial_integration
 
 
 
