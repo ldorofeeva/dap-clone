@@ -201,7 +201,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
                         forceSendVisualisation = True
                         data_summed = None
                         n_aggregated_images = 1
-                data[pixel_mask_pf == 0] = np.NaN #TODO: boolean mask
+                data[~pixel_mask_pf] = np.nan
 
             else:
                 data = image
