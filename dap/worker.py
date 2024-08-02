@@ -59,8 +59,6 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
     rad_radial_integration = None
     norm_radial_integration = None
 
-    results = {}
-
     pedestal_name_saved = None
 
     pixel_mask_corrected = None
