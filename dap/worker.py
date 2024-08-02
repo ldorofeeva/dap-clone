@@ -62,7 +62,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
     results = {}
 
-    pedestal_file_name_saved = None
+    pedestal_name_saved = None
 
     pixel_mask_corrected = None
     pixel_mask_pf = None
@@ -125,11 +125,11 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
         double_pixels = results.get("double_pixels", "mask")
 
-        pedestal_file_name = metadata.get("pedestal_name", None)
-        if pedestal_file_name is not None and pedestal_file_name != pedestal_file_name_saved:
+        pedestal_name = metadata.get("pedestal_name", None)
+        if pedestal_name is not None and pedestal_name != pedestal_name_saved:
             pixel_mask_current = ju_stream_adapter.handler.pixel_mask
             ju_stream_adapter.handler.pixel_mask = pixel_mask_current
-            pedestal_file_name_saved = pedestal_file_name
+            pedestal_name_saved = pedestal_name
 
         data = ju_stream_adapter.process(image, metadata, double_pixels=double_pixels)
 
