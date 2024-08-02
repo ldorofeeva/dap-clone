@@ -6,6 +6,10 @@ from peakfinder8_extension import peakfinder_8
 
 
 def calc_peakfinder_analysis(results, data, pixel_mask_pf):
+    do_peakfinder_analysis = results.get("do_peakfinder_analysis", False)
+    if not do_peakfinder_analysis:
+        return
+
     if pixel_mask_pf is None:
         return
 

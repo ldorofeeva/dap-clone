@@ -1,6 +1,10 @@
 #TODO: find a better way to handle this
 
 def calc_apply_additional_mask(detector, pixel_mask_pf):
+    apply_additional_mask = results.get("apply_additional_mask", False)
+    if not apply_additional_mask:
+        return
+
     if detector == "JF06T08V04":
         # edge pixels
         pixel_mask_pf[0:1030, 1100] = 0

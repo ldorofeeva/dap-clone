@@ -159,10 +159,9 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
             else:
                 pixel_mask_pf = None
 
-# add additional mask at the edge of modules for JF06T08
-        apply_additional_mask = results.get("apply_additional_mask", False)
-        if apply_additional_mask:
-            calc_apply_additional_mask(detector, pixel_mask_pf)
+
+        calc_apply_additional_mask(detector, pixel_mask_pf)
+
 
         if pixel_mask_corrected is not None:
             data_s = copy(image)
@@ -195,20 +194,9 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
             if threshold_max > threshold_min:
                 pfdata[pfdata > threshold_max] = threshold_value
 
-    # if roi calculation request is present, make it
-        do_roi = ("roi_x1" in results)
-        if do_roi:
-            calc_roi(results, pfdata, pixel_mask_pf, threshold_value_choice)
-
-# SPI analysis
-        do_spi_analysis = results.get("do_spi_analysis", False)
-        if do_spi_analysis:
-            calc_spi_analysis(results)
-
-# in case all needed parameters are present, make peakfinding
-        do_peakfinder_analysis = results.get("do_peakfinder_analysis", False)
-        if do_peakfinder_analysis:
-            calc_peakfinder_analysis(results, pfdata, pixel_mask_pf)
+        calc_roi(results, pfdata, pixel_mask_pf, threshold_value_choice)
+        calc_spi_analysis(results)
+        calc_peakfinder_analysis(results, pfdata, pixel_mask_pf)
 
 # ???
         forceSendVisualisation = False
