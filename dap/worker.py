@@ -107,9 +107,9 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
         detector_name = results.get("detector_name", "")
 
-        results["laser_on"] = False
         results["number_of_spots"] = 0
         results["is_hit_frame"] = False
+
 
         daq_rec = results.get("daq_rec", 0)
         event_laser    = read_bit(daq_rec, 16)
@@ -117,8 +117,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 #        event_fel      = read_bit(daq_rec, 18)
         event_ppicker  = read_bit(daq_rec, 19)
 
-        if not event_darkshot:
-            results["laser_on"] = event_laser
+        results["laser_on"] = event_laser and not event_darkshot
 
 # Filter only ppicker events, if requested; skipping all other events
         select_only_ppicker_events = results.get("select_only_ppicker_events", False)
