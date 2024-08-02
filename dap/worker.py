@@ -134,7 +134,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         data = ju_stream_adapter.process(image, metadata, double_pixels=double_pixels)
 
         # pedestal file is not in stream, skip this frame
-        if ju_stream_adapter.handler.pedestal_file is None or ju_stream_adapter.handler.pedestal_file == "":
+        if not ju_stream_adapter.handler.pedestal_file:
             continue
 
         data = np.ascontiguousarray(data)
