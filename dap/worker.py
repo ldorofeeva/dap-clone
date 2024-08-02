@@ -52,8 +52,6 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
     zmq_socks = ZMQSockets(backend_address, accumulator_host, accumulator_port, visualisation_host, visualisation_port)
 
-# all the normal workers
-    worker = 1
 
     center_radial_integration = None
     rad_radial_integration = None
@@ -67,6 +65,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
     n_aggregated_images = 1
     data_summed = None
 
+
     while True:
 
 # check if peakfinder parameters changed and then re-read it
@@ -75,17 +74,17 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
                 new_time = os.path.getmtime(fn_peakfinder_parameters)
                 time_delta = new_time - peakfinder_parameters_time
                 if time_delta > 2.0:
-                    old_peakfinder_parameters = peakfinder_parameters
+#                    old_peakfinder_parameters = peakfinder_parameters
                     sleep(0.5)
                     peakfinder_parameters = json_load(fn_peakfinder_parameters)
                     peakfinder_parameters_time = new_time
                     center_radial_integration = None # beam_center_x/beam_center_y might have changed
-                    if worker ==  0:
-                        print(f"({pulse_id}) update peakfinder parameters {old_peakfinder_parameters}", flush=True)
-                        print(f"                                     --> {peakfinder_parameters}", flush=True)
-                        print(flush=True)
+#                    if worker ==  0:
+#                        print(f"({pulse_id}) update peakfinder parameters {old_peakfinder_parameters}", flush=True)
+#                        print(f"                                     --> {peakfinder_parameters}", flush=True)
+#                        print(flush=True)
         except Exception as e:
-            print(f"({pulse_id}) problem ({e}) to read peakfinder parameters file, worker : {worker}", flush=True)
+            print(f"({pulse_id}) problem ({e}) to read peakfinder parameters file", flush=True)
 
 
         if not zmq_socks.has_data():
@@ -193,7 +192,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
                     data_summed = data.copy()
                     data_summed[data == -np.nan] = -np.nan #TODO: this does nothing
                     results["aggregated_images"] = n_aggregated_images
-                    results["worker"] = worker
+                    results["worker"] = 1 #TODO: keep this for backwards compatibility?
                     if n_aggregated_images >= results["aggregation_max"]:
                         forceSendVisualisation = True
                         data_summed = None
