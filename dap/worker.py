@@ -184,9 +184,8 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         if pixel_mask_pf is not None:
             pfdata[pixel_mask_pf != 1] = np.nan
 
-        threshold_value_choice = calc_apply_threshold(results, pfdata)
-
-        calc_roi(results, pfdata, pixel_mask_pf, threshold_value_choice)
+        calc_apply_threshold(results, pfdata)
+        calc_roi(results, pfdata, pixel_mask_pf)
         calc_spi_analysis(results)
         calc_peakfinder_analysis(results, pfdata, pixel_mask_pf)
 

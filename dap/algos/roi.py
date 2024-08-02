@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def calc_roi(results, data, pixel_mask_pf, threshold_value_choice):
+def calc_roi(results, data, pixel_mask_pf):
     if pixel_mask_pf is None:
         return
 
@@ -20,6 +20,8 @@ def calc_roi(results, data, pixel_mask_pf, threshold_value_choice):
     if not (len(roi_x1) == len(roi_x2) == len(roi_y1) == len(roi_y2)):
         return
 
+    threshold_value = results.get("threshold_value", "NaN")
+
     roi_intensities = []
     roi_intensities_normalised = []
     roi_intensities_x = []
@@ -30,7 +32,7 @@ def calc_roi(results, data, pixel_mask_pf, threshold_value_choice):
 
         roi_sum = np.nansum(data_roi)
 
-        if threshold_value_choice == "NaN":
+        if threshold_value == "NaN":
             roi_area = (ix2 - ix1) * (iy2 - iy1)
             roi_sum_norm = roi_sum / roi_area
         else:

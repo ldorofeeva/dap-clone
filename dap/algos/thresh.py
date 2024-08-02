@@ -15,7 +15,5 @@ def calc_apply_threshold(results, data):
         if threshold_max > threshold_min:
             data[data > threshold_max] = threshold_value
 
-    return threshold_value_choice
-
 
 
