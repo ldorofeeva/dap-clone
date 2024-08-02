@@ -122,11 +122,6 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         if select_only_ppicker_events and not event_ppicker:
             continue
 
-# special settings for p20270, only few shots were opened by pulse-picker
-#        if detector in ["JF06T32V02"]:
-#            if event_ppicker:
-#                results["number_of_spots"] = 50
-#                results["is_hit_frame"] = True
 
         double_pixels = results.get("double_pixels", "mask")
 
