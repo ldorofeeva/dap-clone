@@ -48,7 +48,7 @@ def calc_radial_integration(results, data, pixel_mask_pf, center, rad, norm):
     results["radint_I"] = rp[r_min:].tolist() #TODO: why not stop at r_max?
     results["radint_q"] = [r_min, r_max]
 
-    return center, rad
+    return center, rad, norm
 
 
 def prepare_radial_profile(data, center, keep_pixels=None):
