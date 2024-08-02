@@ -47,7 +47,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         peakfinder_parameters = json_load(fn_peakfinder_parameters)
         peakfinder_parameters_time = os.path.getmtime(fn_peakfinder_parameters)
 
-    pulseid = 0
+    pulse_id = 0
 
     ju_stream_adapter = ju.StreamAdapter()
 
@@ -84,11 +84,11 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
                     peakfinder_parameters_time = new_time
                     center_radial_integration = None
                     if worker ==  0:
-                        print(f"({pulseid}) update peakfinder parameters {old_peakfinder_parameters}", flush=True)
+                        print(f"({pulse_id}) update peakfinder parameters {old_peakfinder_parameters}", flush=True)
                         print(f"                                     --> {peakfinder_parameters}", flush=True)
                         print(flush=True)
         except Exception as e:
-            print(f"({pulseid}) problem ({e}) to read peakfinder parameters file, worker : {worker}", flush=True)
+            print(f"({pulse_id}) problem ({e}) to read peakfinder parameters file, worker : {worker}", flush=True)
 
 
         if not zmq_socks.has_data():
@@ -102,10 +102,10 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         results = metadata.copy()
 
 
-        pulseid = results.get("pulse_id", 0)
+        pulse_id = results.get("pulse_id", 0)
         results.update(peakfinder_parameters)
 
-        detector = results.get("detector_name", "")
+        detector_name = results.get("detector_name", "")
 
         results["laser_on"] = False
         results["number_of_spots"] = 0
@@ -158,7 +158,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
                 pixel_mask_pf = None
 
 
-        calc_apply_additional_mask(results, detector, pixel_mask_pf) # changes pixel_mask_pf in place
+        calc_apply_additional_mask(results, detector_name, pixel_mask_pf) # changes pixel_mask_pf in place
 
 
         if pixel_mask_corrected is not None:
