@@ -160,7 +160,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
                 pixel_mask_pf = None
 
 
-        calc_apply_additional_mask(results, detector, pixel_mask_pf)
+        calc_apply_additional_mask(results, detector, pixel_mask_pf) # changes pixel_mask_pf in place
 
 
         if pixel_mask_corrected is not None:
@@ -184,7 +184,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         if pixel_mask_pf is not None:
             pfdata[pixel_mask_pf != 1] = np.nan
 
-        calc_apply_threshold(results, pfdata)
+        calc_apply_threshold(results, pfdata) # changes pfdata in place
         calc_roi(results, pfdata, pixel_mask_pf)
         calc_spi_analysis(results)
         calc_peakfinder_analysis(results, pfdata, pixel_mask_pf)
