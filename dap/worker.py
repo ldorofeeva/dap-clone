@@ -182,7 +182,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
     # make all masked pixels values nans
         if pixel_mask_pf is not None:
-            pfdata[pixel_mask_pf != 1] = np.nan
+            pfdata[pixel_mask_pf != 1] = np.nan #TODO: boolean mask
 
         calc_apply_threshold(results, pfdata) # changes pfdata in place
         calc_roi(results, pfdata, pixel_mask_pf)
@@ -216,7 +216,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
                         forceSendVisualisation = True
                         data_summed = None
                         n_aggregated_images = 1
-                data[pixel_mask_pf == 0] = np.NaN
+                data[pixel_mask_pf == 0] = np.NaN #TODO: boolean mask
 
             else:
                 data = image
