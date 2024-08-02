@@ -140,7 +140,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
         # starting from ju 3.3.1 pedestal file is cached in library, re-calculated only if parameters (and/or pedestal file) are changed
         id_pixel_mask_1 = id(pixel_mask_corrected)
-        pixel_mask_corrected = ju_stream_adapter.handler.get_pixel_mask(geometry=True, gap_pixels=True, double_pixels=double_pixels)
+        pixel_mask_corrected = ju_stream_adapter.handler.get_pixel_mask(double_pixels=double_pixels)
         id_pixel_mask_2 = id(pixel_mask_corrected)
 
         if id_pixel_mask_1 != id_pixel_mask_2:
