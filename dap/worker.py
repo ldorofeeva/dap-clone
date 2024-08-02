@@ -117,7 +117,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
         results["laser_on"] = event_laser and not event_darkshot
 
-# Filter only ppicker events, if requested; skipping all other events
+        # if requested, filter on ppicker events by skipping other events
         select_only_ppicker_events = results.get("select_only_ppicker_events", False)
         if select_only_ppicker_events and not event_ppicker:
             continue
