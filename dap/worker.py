@@ -90,14 +90,17 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         except Exception as e:
             print(f"({pulseid}) problem ({e}) to read peakfinder parameters file, worker : {worker}", flush=True)
 
+
         if not zmq_socks.has_data():
             continue
 
         image, metadata = zmq_socks.get_data()
 
-        results = copy(metadata)
-        if results["shape"][0] == 2 and results["shape"][1] == 2:
+        if metadata["shape"] == [2, 2]: # this is used as marker for empty images
             continue
+
+        results = metadata.copy()
+
 
         pulseid = results.get("pulse_id", 0)
         results.update(peakfinder_parameters)
