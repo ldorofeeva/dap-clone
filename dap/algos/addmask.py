@@ -1,11 +1,15 @@
 #TODO: find a better way to handle this
 
-def calc_apply_additional_mask(results, detector, pixel_mask_pf):
+def calc_apply_additional_mask(results, pixel_mask_pf):
     apply_additional_mask = results.get("apply_additional_mask", False)
     if not apply_additional_mask:
         return
 
-    if detector == "JF06T08V04":
+    detector_name = results.get("detector_name", None)
+    if not detector_name:
+        return
+
+    if detector_name == "JF06T08V04":
         # edge pixels
         pixel_mask_pf[0:1030, 1100] = 0
         pixel_mask_pf[0:1030, 1613] = 0
@@ -52,7 +56,7 @@ def calc_apply_additional_mask(results, detector, pixel_mask_pf):
         pixel_mask_pf[1794, 1503:1550] = 0
 
 
-    if detector == "JF17T16V01":
+    elif detector_name == "JF17T16V01":
         # mask module 11
         pixel_mask_pf[2619:3333,1577:2607] = 0
 

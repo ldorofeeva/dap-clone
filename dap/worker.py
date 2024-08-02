@@ -105,8 +105,6 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         pulse_id = results.get("pulse_id", 0)
         results.update(peakfinder_parameters)
 
-        detector_name = results.get("detector_name", "")
-
         results["number_of_spots"] = 0
         results["is_hit_frame"] = False
 
@@ -157,7 +155,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
                 pixel_mask_pf = None
 
 
-        calc_apply_additional_mask(results, detector_name, pixel_mask_pf) # changes pixel_mask_pf in place
+        calc_apply_additional_mask(results, pixel_mask_pf) # changes pixel_mask_pf in place
 
 
         if pixel_mask_corrected is not None:
