@@ -7,7 +7,7 @@ from time import sleep
 import jungfrau_utils as ju
 import numpy as np
 
-from algos import calc_apply_additional_mask, calc_peakfinder_analysis, calc_radial_integration, calc_roi, calc_spi_analysis
+from algos import calc_apply_additional_mask, calc_apply_threshold, calc_peakfinder_analysis, calc_radial_integration, calc_roi, calc_spi_analysis
 from utils import json_load, read_bit
 from zmqsocks import ZMQSockets
 
@@ -184,15 +184,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         if pixel_mask_pf is not None:
             pfdata[pixel_mask_pf != 1] = np.nan
 
-        apply_threshold = results.get("apply_threshold", False)
-        threshold_value_choice = results.get("threshold_value", "NaN")
-        threshold_value = 0 if threshold_value_choice == "0" else np.nan
-        if apply_threshold and all(k in results for k in ("threshold_min", "threshold_max")):
-            threshold_min = float(results["threshold_min"])
-            threshold_max = float(results["threshold_max"])
-            pfdata[pfdata < threshold_min] = threshold_value
-            if threshold_max > threshold_min:
-                pfdata[pfdata > threshold_max] = threshold_value
+        threshold_value_choice = calc_apply_threshold(results, pfdata)
 
         calc_roi(results, pfdata, pixel_mask_pf, threshold_value_choice)
         calc_spi_analysis(results)
