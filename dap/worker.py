@@ -1,6 +1,5 @@
 import argparse
 import os
-from copy import copy
 from random import randint
 from time import sleep
 
@@ -152,7 +151,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
                 pixel_mask_pf = None
 
         if pixel_mask_corrected is not None:
-            data_s = copy(image)
+            data_s = image.copy()
             saturated_pixels_coordinates = ju_stream_adapter.handler.get_saturated_pixels(data_s, mask=True, geometry=True, gap_pixels=True, double_pixels=double_pixels)
             results["saturated_pixels"] = len(saturated_pixels_coordinates[0])
             results["saturated_pixels_x"] = saturated_pixels_coordinates[1].tolist()
@@ -166,7 +165,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
 
     #copy image to work with peakfinder, just in case
-        pfdata = np.copy(data)
+        pfdata = data.copy()
 
         calc_mask_pixels(pfdata, pixel_mask_pf) # changes pfdata in place
         calc_apply_threshold(results, pfdata) # changes pfdata in place
