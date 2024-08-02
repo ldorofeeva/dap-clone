@@ -2,8 +2,6 @@ import numpy as np
 
 
 def calc_radial_integration(results, data, keep_pixels, pixel_mask_pf, center_radial_integration, r_radial_integration):
-    data = np.copy(data)
-
     if keep_pixels is None and pixel_mask_pf is not None:
         keep_pixels = (pixel_mask_pf != 0)
 
@@ -25,6 +23,7 @@ def calc_radial_integration(results, data, keep_pixels, pixel_mask_pf, center_ra
     if apply_threshold and all(k in results for k in ("threshold_min", "threshold_max")):
         threshold_min = float(results["threshold_min"])
         threshold_max = float(results["threshold_max"])
+        data = np.copy(data) # do the following in-place changes on a copy
         data[data < threshold_min] = np.nan
         #TODO: skipping max is a guess, but not obvious/symmetric -- better to ensure the order min < max by switching them if needed
         if threshold_max > threshold_min:
