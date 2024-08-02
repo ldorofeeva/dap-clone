@@ -12,8 +12,8 @@ def calc_radial_integration(results, data, pixel_mask_pf, center, rad, norm):
     if rad is None or norm is None:
         rad, norm = prepare_radial_profile(data, center, keep_pixels=pixel_mask_pf)
 
-    r_min = int(np.min(rad))
-    r_max = int(np.max(rad)) + 1
+    r_min = min(rad)
+    r_max = max(rad) + 1
 
     apply_threshold = results.get("apply_threshold", False)
 
