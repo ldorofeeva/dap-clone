@@ -149,7 +149,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
             r_radial_integration = None
             if pixel_mask_corrected is not None:
                 #pixel_mask_corrected = np.ascontiguousarray(pixel_mask_corrected)
-                pixel_mask_pf = np.ascontiguousarray(pixel_mask_corrected).astype(np.int8, copy=False)
+                pixel_mask_pf = np.ascontiguousarray(pixel_mask_corrected)
                 calc_apply_additional_mask(results, pixel_mask_pf) # changes pixel_mask_pf in place
             else:
                 pixel_mask_pf = None
