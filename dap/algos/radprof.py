@@ -50,15 +50,6 @@ def calc_radial_integration(results, data, pixel_mask_pf, center, rad):
     return center, rad
 
 
-
-def radial_profile(data, rad, norm, keep_pixels=None):
-    if keep_pixels is not None:
-        data = data[keep_pixels]
-    data = data.ravel()
-    tbin = np.bincount(rad, data)
-    rp = tbin / norm
-    return rp
-
 def prepare_radial_profile(data, center, keep_pixels=None):
     y, x = np.indices(data.shape)
     x0, y0 = center
@@ -68,6 +59,15 @@ def prepare_radial_profile(data, center, keep_pixels=None):
     rad = rad.astype(int).ravel()
     norm = np.bincount(rad)
     return rad, norm
+
+
+def radial_profile(data, rad, norm, keep_pixels=None):
+    if keep_pixels is not None:
+        data = data[keep_pixels]
+    data = data.ravel()
+    tbin = np.bincount(rad, data)
+    rp = tbin / norm
+    return rp
 
 
 
