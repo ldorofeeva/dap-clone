@@ -5,8 +5,10 @@ import numpy as np
 
 def npmemo(func):
     """
-    numpy array aware memoizer
+    numpy array aware memoizer with size limit
     """
+    maxsize = 10
+    order = []
     cache = {}
 
     @functools.wraps(func)
@@ -15,6 +17,10 @@ def npmemo(func):
         try:
             return cache[key]
         except KeyError:
+            if len(cache) >= maxsize:
+                oldest = order.pop(0)
+                cache.pop(oldest)
+            order.append(key)
             cache[key] = res = func(*args)
             return res
 
@@ -66,6 +72,10 @@ if __name__ == "__main__":
         2,
         5
     )
+
+    for a, o in zip(arrays, offsets):
+        a = np.array(a)
+        test(a, o)
 
     for a, o in zip(arrays, offsets):
         a = np.array(a)
