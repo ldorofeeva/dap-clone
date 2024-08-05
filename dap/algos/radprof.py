@@ -10,7 +10,7 @@ def calc_radial_integration(results, data, pixel_mask_pf, center, rad, norm):
         rad = norm = None
 
     if rad is None or norm is None:
-        rad, norm = prepare_radial_profile(data, center, keep_pixels=pixel_mask_pf)
+        rad, norm = prepare_radial_profile(data.shape, center, pixel_mask_pf)
 
     r_min = min(rad)
     r_max = max(rad) + 1
@@ -27,7 +27,7 @@ def calc_radial_integration(results, data, pixel_mask_pf, center, rad, norm):
         if threshold_max > threshold_min:
             data[data > threshold_max] = np.nan
 
-    rp = radial_profile(data, rad, norm, keep_pixels=pixel_mask_pf)
+    rp = radial_profile(data, rad, norm, pixel_mask_pf)
 
     silent_min = results.get("radial_integration_silent_min", None)
     silent_max = results.get("radial_integration_silent_max", None)
@@ -51,8 +51,8 @@ def calc_radial_integration(results, data, pixel_mask_pf, center, rad, norm):
     return center, rad, norm
 
 
-def prepare_radial_profile(data, center, keep_pixels=None):
-    y, x = np.indices(data.shape)
+def prepare_radial_profile(shape, center, keep_pixels):
+    y, x = np.indices(shape)
     x0, y0 = center
     rad = np.sqrt((x - x0)**2 + (y - y0)**2)
     if keep_pixels is not None:
@@ -62,7 +62,7 @@ def prepare_radial_profile(data, center, keep_pixels=None):
     return rad, norm
 
 
-def radial_profile(data, rad, norm, keep_pixels=None):
+def radial_profile(data, rad, norm, keep_pixels):
     if keep_pixels is not None:
         data = data[keep_pixels]
     data = data.ravel()
