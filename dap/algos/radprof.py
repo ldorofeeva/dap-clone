@@ -4,6 +4,10 @@ from .utils import npmemo
 
 
 def calc_radial_integration(results, data, pixel_mask_pf):
+    do_radial_integration = results.get("do_radial_integration", False)
+    if not do_radial_integration:
+        return
+
     center_x = results["beam_center_x"]
     center_y = results["beam_center_y"]
 

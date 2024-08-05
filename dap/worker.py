@@ -150,10 +150,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
 
 # pump probe analysis
-        do_radial_integration = results.get("do_radial_integration", False)
-        if do_radial_integration:
-            calc_radial_integration(results, data, pixel_mask_pf)
-
+        calc_radial_integration(results, data, pixel_mask_pf)
 
     #copy image to work with peakfinder, just in case
         pfdata = data.copy()
