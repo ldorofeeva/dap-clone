@@ -4,12 +4,10 @@ from .utils import npmemo
 
 
 def calc_radial_integration(results, data, pixel_mask_pf):
-    center = [
-        results["beam_center_x"],
-        results["beam_center_y"]
-    ]
+    center_x = results["beam_center_x"]
+    center_y = results["beam_center_y"]
 
-    rad, norm = prepare_radial_profile(data.shape, center, pixel_mask_pf)
+    rad, norm = prepare_radial_profile(data.shape, center_x, center_y, pixel_mask_pf)
 
     r_min = min(rad)
     r_max = max(rad) + 1
@@ -50,9 +48,8 @@ def calc_radial_integration(results, data, pixel_mask_pf):
 
 
 @npmemo
-def prepare_radial_profile(shape, center, keep_pixels):
+def prepare_radial_profile(shape, x0, y0, keep_pixels):
     y, x = np.indices(shape)
-    x0, y0 = center
     rad = np.sqrt((x - x0)**2 + (y - y0)**2)
     if keep_pixels is not None:
         rad = rad[keep_pixels]
