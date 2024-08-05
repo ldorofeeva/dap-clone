@@ -53,10 +53,6 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
     zmq_socks = ZMQSockets(backend_address, accumulator_host, accumulator_port, visualisation_host, visualisation_port)
 
 
-    center_radial_integration = None
-    rad_radial_integration = None
-    norm_radial_integration = None
-
     pedestal_name_saved = None
 
     pixel_mask_corrected = None
@@ -78,7 +74,6 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
                     sleep(0.5)
                     peakfinder_parameters = json_load(fn_peakfinder_parameters)
                     peakfinder_parameters_time = new_time
-                    center_radial_integration = None # beam_center_x/beam_center_y might have changed
 #                    if worker ==  0:
 #                        print(f"({pulse_id}) update peakfinder parameters {old_peakfinder_parameters}", flush=True)
 #                        print(f"                                     --> {peakfinder_parameters}", flush=True)
@@ -141,7 +136,6 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         id_pixel_mask_2 = id(pixel_mask_corrected)
 
         if id_pixel_mask_1 != id_pixel_mask_2:
-            rad_radial_integration = norm_radial_integration = None # if the pixel mask changes, the radii and normalization need to be re-calculated
             if pixel_mask_corrected is not None:
                 pixel_mask_pf = np.ascontiguousarray(pixel_mask_corrected)
                 calc_apply_additional_mask(results, pixel_mask_pf) # changes pixel_mask_pf in place
@@ -158,7 +152,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 # pump probe analysis
         do_radial_integration = results.get("do_radial_integration", False)
         if do_radial_integration:
-            center_radial_integration, rad_radial_integration, norm_radial_integration = calc_radial_integration(results, data, pixel_mask_pf, center_radial_integration, rad_radial_integration, norm_radial_integration)
+            calc_radial_integration(results, data, pixel_mask_pf)
 
 
     #copy image to work with peakfinder, just in case

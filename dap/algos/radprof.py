@@ -1,16 +1,15 @@
 import numpy as np
 
+from .utils import npmemo
 
-def calc_radial_integration(results, data, pixel_mask_pf, center, rad, norm):
-    if center is None:
-        center = [
-            results["beam_center_x"],
-            results["beam_center_y"]
-        ]
-        rad = norm = None
 
-    if rad is None or norm is None:
-        rad, norm = prepare_radial_profile(data.shape, center, pixel_mask_pf)
+def calc_radial_integration(results, data, pixel_mask_pf):
+    center = [
+        results["beam_center_x"],
+        results["beam_center_y"]
+    ]
+
+    rad, norm = prepare_radial_profile(data.shape, center, pixel_mask_pf)
 
     r_min = min(rad)
     r_max = max(rad) + 1
@@ -48,9 +47,9 @@ def calc_radial_integration(results, data, pixel_mask_pf, center, rad, norm):
     results["radint_I"] = rp[r_min:].tolist() #TODO: why not stop at r_max?
     results["radint_q"] = [r_min, r_max]
 
-    return center, rad, norm
 
 
+@npmemo
 def prepare_radial_profile(shape, center, keep_pixels):
     y, x = np.indices(shape)
     x0, y0 = center
