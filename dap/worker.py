@@ -45,12 +45,13 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         peakfinder_parameters = json_load(fn_peakfinder_parameters)
         peakfinder_parameters_time = os.path.getmtime(fn_peakfinder_parameters)
 
-    pulse_id = 0
 
     jfdata = JFData()
 
     zmq_socks = ZMQSockets(backend_address, accumulator_host, accumulator_port, visualisation_host, visualisation_port)
 
+
+    pulse_id = 0
 
     n_aggregated_images = 1
     data_summed = None
@@ -84,10 +85,9 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         if metadata["shape"] == [2, 2]: # this is used as marker for empty images
             continue
 
+        pulse_id = metadata.get("pulse_id", 0)
+
         results = metadata.copy()
-
-
-        pulse_id = results.get("pulse_id", 0)
         results.update(peakfinder_parameters)
 
         results["number_of_spots"] = 0
@@ -128,11 +128,9 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
             results["saturated_pixels_y"] = saturated_pixels_y.tolist()
 
 
-# pump probe analysis
         calc_radial_integration(results, data, pixel_mask_pf)
 
-    #copy image to work with peakfinder, just in case
-        pfdata = data.copy()
+        pfdata = data.copy() #TODO: is this copy needed?
 
         calc_mask_pixels(pfdata, pixel_mask_pf) # changes pfdata in place
         calc_apply_threshold(results, pfdata) # changes pfdata in place
