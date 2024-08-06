@@ -9,8 +9,22 @@ class JFData:
 
     def __init__(self):
         self.ju_stream_adapter = ju.StreamAdapter()
+        self.pedestal_name_saved = None
         self.id_pixel_mask_corrected = None
         self.pixel_mask_pf = None
+
+
+    def ensure_current_pixel_mask(self, pedestal_name):
+        if pedestal_name is None:
+            return
+
+        new_pedestal_name = pedestal_name
+        old_pedestal_name = self.pedestal_name_saved
+        if new_pedestal_name == old_pedestal_name:
+            return
+
+        self.refresh_pixel_mask()
+        self.pedestal_name_saved = pedestal_name
 
 
     def refresh_pixel_mask(self):

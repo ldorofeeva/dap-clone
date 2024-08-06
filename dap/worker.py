@@ -52,8 +52,6 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
     zmq_socks = ZMQSockets(backend_address, accumulator_host, accumulator_port, visualisation_host, visualisation_port)
 
 
-    pedestal_name_saved = None
-
     n_aggregated_images = 1
     data_summed = None
 
@@ -114,9 +112,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
         pedestal_name = metadata.get("pedestal_name", None)
 
-        if pedestal_name is not None and pedestal_name != pedestal_name_saved:
-            jfdata.refresh_pixel_mask()
-            pedestal_name_saved = pedestal_name
+        jfdata.ensure_current_pixel_mask(pedestal_name)
 
         data = jfdata.process(image, metadata, double_pixels)
 
