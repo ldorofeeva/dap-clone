@@ -108,11 +108,11 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
             continue
 
 
-        double_pixels = results.get("double_pixels", "mask")
-
         pedestal_name = metadata.get("pedestal_name", None)
 
         jfdata.ensure_current_pixel_mask(pedestal_name)
+
+        double_pixels = results.get("double_pixels", "mask")
 
         data = jfdata.process(image, metadata, double_pixels)
 
