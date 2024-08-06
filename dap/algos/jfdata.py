@@ -13,6 +13,19 @@ class JFData:
         self.pixel_mask_pf = None
 
 
+    def refresh_pixel_mask(self):
+        pixel_mask_current = self.ju_stream_adapter.handler.pixel_mask
+        self.ju_stream_adapter.handler.pixel_mask = pixel_mask_current
+
+
+    def process(self, image, metadata, double_pixels):
+        return self.ju_stream_adapter.process(image, metadata, double_pixels=double_pixels)
+
+
+    def has_pedestal_file(self):
+        return bool(self.ju_stream_adapter.handler.pedestal_file)
+
+
     def get_pixel_mask(self, results, double_pixels):
         pixel_mask_corrected = self.ju_stream_adapter.handler.get_pixel_mask(double_pixels=double_pixels)
         if pixel_mask_corrected is None:

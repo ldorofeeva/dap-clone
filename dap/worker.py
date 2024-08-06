@@ -48,7 +48,6 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
     pulse_id = 0
 
     jfdata = JFData()
-    ju_stream_adapter = jfdata.ju_stream_adapter
 
     zmq_socks = ZMQSockets(backend_address, accumulator_host, accumulator_port, visualisation_host, visualisation_port)
 
@@ -114,15 +113,15 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         double_pixels = results.get("double_pixels", "mask")
 
         pedestal_name = metadata.get("pedestal_name", None)
+
         if pedestal_name is not None and pedestal_name != pedestal_name_saved:
-            pixel_mask_current = ju_stream_adapter.handler.pixel_mask
-            ju_stream_adapter.handler.pixel_mask = pixel_mask_current
+            jfdata.refresh_pixel_mask()
             pedestal_name_saved = pedestal_name
 
-        data = ju_stream_adapter.process(image, metadata, double_pixels=double_pixels)
+        data = jfdata.process(image, metadata, double_pixels)
 
-        # pedestal file is not in stream, skip this frame
-        if not ju_stream_adapter.handler.pedestal_file:
+        # the pedestal file is loaded in process(), this check needs to be afterwards
+        if not jfdata.has_pedestal_file():
             continue
 
         data = np.ascontiguousarray(data)
