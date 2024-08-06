@@ -116,11 +116,8 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
         data = jfdata.process(image, metadata, double_pixels)
 
-        # the pedestal file is loaded in process(), this check needs to be afterwards
-        if not jfdata.has_pedestal_file():
+        if not data:
             continue
-
-        data = np.ascontiguousarray(data)
 
         pixel_mask_pf = jfdata.get_pixel_mask(results, double_pixels)
 

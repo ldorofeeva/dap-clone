@@ -33,11 +33,14 @@ class JFData:
 
 
     def process(self, image, metadata, double_pixels):
-        return self.ju_stream_adapter.process(image, metadata, double_pixels=double_pixels)
+        data = self.ju_stream_adapter.process(image, metadata, double_pixels=double_pixels)
 
+        # the pedestal file is loaded in process(), this check needs to be afterwards
+        if not self.ju_stream_adapter.handler.pedestal_file:
+            return None
 
-    def has_pedestal_file(self):
-        return bool(self.ju_stream_adapter.handler.pedestal_file)
+        data = np.ascontiguousarray(data)
+        return data
 
 
     def get_pixel_mask(self, results, double_pixels):
