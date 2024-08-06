@@ -3,10 +3,9 @@ import os
 from random import randint
 from time import sleep
 
-import jungfrau_utils as ju
 import numpy as np
 
-from algos import calc_apply_additional_mask, calc_apply_threshold, calc_mask_pixels, calc_peakfinder_analysis, calc_radial_integration, calc_roi, calc_spi_analysis
+from algos import calc_apply_threshold, calc_mask_pixels, calc_peakfinder_analysis, calc_radial_integration, calc_roi, calc_spi_analysis, JFData
 from utils import json_load, read_bit
 from zmqsocks import ZMQSockets
 
@@ -48,15 +47,13 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
     pulse_id = 0
 
-    ju_stream_adapter = ju.StreamAdapter()
+    jfdata = JFData()
+    ju_stream_adapter = jfdata.ju_stream_adapter
 
     zmq_socks = ZMQSockets(backend_address, accumulator_host, accumulator_port, visualisation_host, visualisation_port)
 
 
     pedestal_name_saved = None
-
-    pixel_mask_corrected = None
-    pixel_mask_pf = None
 
     n_aggregated_images = 1
     data_summed = None
@@ -130,20 +127,10 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
         data = np.ascontiguousarray(data)
 
-        # starting from ju 3.3.1 pedestal file is cached in library, re-calculated only if parameters (and/or pedestal file) are changed
-        id_pixel_mask_1 = id(pixel_mask_corrected)
-        pixel_mask_corrected = ju_stream_adapter.handler.get_pixel_mask(double_pixels=double_pixels)
-        id_pixel_mask_2 = id(pixel_mask_corrected)
+        pixel_mask_pf = jfdata.get_pixel_mask(results, double_pixels)
 
-        if id_pixel_mask_1 != id_pixel_mask_2:
-            if pixel_mask_corrected is not None:
-                pixel_mask_pf = np.ascontiguousarray(pixel_mask_corrected)
-                calc_apply_additional_mask(results, pixel_mask_pf) # changes pixel_mask_pf in place
-            else:
-                pixel_mask_pf = None
-
-        if pixel_mask_corrected is not None:
-            saturated_pixels_y, saturated_pixels_x = ju_stream_adapter.handler.get_saturated_pixels(image, double_pixels=double_pixels)
+        if pixel_mask_pf is not None:
+            saturated_pixels_y, saturated_pixels_x = jfdata.get_saturated_pixels(image, double_pixels)
             results["saturated_pixels"] = len(saturated_pixels_x)
             results["saturated_pixels_x"] = saturated_pixels_x.tolist()
             results["saturated_pixels_y"] = saturated_pixels_y.tolist()
