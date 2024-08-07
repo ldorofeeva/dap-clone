@@ -1,12 +1,11 @@
 import argparse
 import os
 from random import randint
-from time import sleep
 
 import numpy as np
 
 from algos import calc_apply_threshold, calc_mask_pixels, calc_peakfinder_analysis, calc_radial_integration, calc_roi, calc_spi_analysis, JFData
-from utils import json_load, read_bit
+from utils import BufferedJSON, read_bit
 from zmqsocks import ZMQSockets
 
 
@@ -40,10 +39,9 @@ def main():
 
 def work(backend_address, accumulator_host, accumulator_port, visualisation_host, visualisation_port, fn_peakfinder_parameters, skip_frames_rate):
     peakfinder_parameters = {}
-    peakfinder_parameters_time = -1
+    bj_peakfinder_parameters = None
     if fn_peakfinder_parameters is not None and os.path.exists(fn_peakfinder_parameters):
-        peakfinder_parameters = json_load(fn_peakfinder_parameters)
-        peakfinder_parameters_time = os.path.getmtime(fn_peakfinder_parameters)
+        bj_peakfinder_parameters = BufferedJSON(fn_peakfinder_parameters)
 
 
     jfdata = JFData()
@@ -61,14 +59,8 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
 # check if peakfinder parameters changed and then re-read it
         try:
-            if peakfinder_parameters_time > 0:
-                new_time = os.path.getmtime(fn_peakfinder_parameters)
-                time_delta = new_time - peakfinder_parameters_time
-                if time_delta > 2.0:
-#                    old_peakfinder_parameters = peakfinder_parameters
-                    sleep(0.5)
-                    peakfinder_parameters = json_load(fn_peakfinder_parameters)
-                    peakfinder_parameters_time = new_time
+            if bj_peakfinder_parameters:
+                peakfinder_parameters = bj_peakfinder_parameters.load()
 #                    if worker ==  0:
 #                        print(f"({pulse_id}) update peakfinder parameters {old_peakfinder_parameters}", flush=True)
 #                        print(f"                                     --> {peakfinder_parameters}", flush=True)
