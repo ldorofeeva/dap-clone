@@ -44,19 +44,11 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
     zmq_socks = ZMQSockets(backend_address, accumulator_host, accumulator_port, visualisation_host, visualisation_port)
 
 
-    pulse_id = 0
-
     n_aggregated_images = 1
     data_summed = None
 
 
     while True:
-        try:
-            peakfinder_parameters = bj_peakfinder_parameters.load()
-        except Exception as e:
-            print(f"({pulse_id}) cannot read peakfinder parameters file: {e}", flush=True) #TODO: logging?
-
-
         if not zmq_socks.has_data():
             continue
 
@@ -65,7 +57,14 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         if metadata["shape"] == [2, 2]: # this is used as marker for empty images
             continue
 
+
         pulse_id = metadata.get("pulse_id", 0)
+
+        try:
+            peakfinder_parameters = bj_peakfinder_parameters.load()
+        except Exception as e:
+            print(f"({pulse_id}) cannot read peakfinder parameters file: {e}", flush=True) #TODO: logging?
+
 
         results = metadata.copy()
         results.update(peakfinder_parameters)
