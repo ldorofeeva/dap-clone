@@ -1,7 +1,6 @@
+import json
 import os
 from time import sleep
-
-from .utils import json_load
 
 
 class BufferedJSON:
@@ -30,6 +29,12 @@ class BufferedJSON:
 
     def get_data(self, *args, **kwargs):
         return json_load(self.fname, *args, **kwargs)
+
+
+
+def json_load(filename, *args, **kwargs):
+    with open(filename, "r") as f:
+        return json.load(f, *args, **kwargs)
 
 
 
