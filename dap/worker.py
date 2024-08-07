@@ -1,5 +1,4 @@
 import argparse
-import os
 from random import randint
 
 import numpy as np
@@ -38,11 +37,7 @@ def main():
 
 
 def work(backend_address, accumulator_host, accumulator_port, visualisation_host, visualisation_port, fn_peakfinder_parameters, skip_frames_rate):
-    peakfinder_parameters = {}
-    bj_peakfinder_parameters = None
-    if fn_peakfinder_parameters is not None and os.path.exists(fn_peakfinder_parameters):
-        bj_peakfinder_parameters = BufferedJSON(fn_peakfinder_parameters)
-
+    bj_peakfinder_parameters = BufferedJSON(fn_peakfinder_parameters)
 
     jfdata = JFData()
 
@@ -59,8 +54,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
 # check if peakfinder parameters changed and then re-read it
         try:
-            if bj_peakfinder_parameters:
-                peakfinder_parameters = bj_peakfinder_parameters.load()
+            peakfinder_parameters = bj_peakfinder_parameters.load()
 #                    if worker ==  0:
 #                        print(f"({pulse_id}) update peakfinder parameters {old_peakfinder_parameters}", flush=True)
 #                        print(f"                                     --> {peakfinder_parameters}", flush=True)
