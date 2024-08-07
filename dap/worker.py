@@ -118,7 +118,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         calc_peakfinder_analysis(results, pfdata, pixel_mask_pf)
 
 # ???
-        forceSendVisualisation = False
+        force_send_visualisation = False
         if data.dtype != np.uint16:
             apply_threshold = results.get("apply_threshold", False)
             apply_aggregation = results.get("apply_aggregation", False)
@@ -141,7 +141,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
                     results["aggregated_images"] = n_aggregated_images
                     results["worker"] = 1 #TODO: keep this for backwards compatibility?
                     if n_aggregated_images >= results["aggregation_max"]:
-                        forceSendVisualisation = True
+                        force_send_visualisation = True
                         data_summed = None
                         n_aggregated_images = 1
                 if pixel_mask_pf is not None:
@@ -157,7 +157,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         zmq_socks.send_accumulator(results)
 
 
-        send_empty_cond1 = (apply_aggregation and "aggregation_max" in results and not forceSendVisualisation)
+        send_empty_cond1 = (apply_aggregation and "aggregation_max" in results and not force_send_visualisation)
         send_empty_cond2 = (not results["is_good_frame"] or not (results["is_hit_frame"] or randint(1, skip_frames_rate) == 1))
 
         if send_empty_cond1 or send_empty_cond2:
