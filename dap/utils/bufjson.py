@@ -25,10 +25,19 @@ class BufferedJSON:
 
 
     def get_time(self):
+        if not self.exists():
+            return -1
         return os.path.getmtime(self.fname)
 
     def get_data(self, *args, **kwargs):
+        if not self.exists():
+            return {}
         return json_load(self.fname, *args, **kwargs)
+
+    def exists(self):
+        if not self.fname:
+            return False
+        return os.path.exists(self.fname)
 
 
 
