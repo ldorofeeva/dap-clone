@@ -51,16 +51,10 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
 
     while True:
-
-# check if peakfinder parameters changed and then re-read it
         try:
             peakfinder_parameters = bj_peakfinder_parameters.load()
-#                    if worker ==  0:
-#                        print(f"({pulse_id}) update peakfinder parameters {old_peakfinder_parameters}", flush=True)
-#                        print(f"                                     --> {peakfinder_parameters}", flush=True)
-#                        print(flush=True)
         except Exception as e:
-            print(f"({pulse_id}) problem ({e}) to read peakfinder parameters file", flush=True)
+            print(f"({pulse_id}) cannot read peakfinder parameters file: {e}", flush=True) #TODO: logging?
 
 
         if not zmq_socks.has_data():

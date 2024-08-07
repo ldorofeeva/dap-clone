@@ -17,6 +17,7 @@ class BufferedJSON:
         if time_delta <= 2: #TODO: is that a good time?
             return self.last_data
 
+        #TODO: logging for change?
         sleep(0.5) #TODO: why?
         current_data = self.get_data()
         self.last_time = current_time
