@@ -44,8 +44,8 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
     zmq_socks = ZMQSockets(backend_address, accumulator_host, accumulator_port, visualisation_host, visualisation_port)
 
 
-    n_aggregated_images = 1
     data_summed = None
+    n_aggregated_images = 1
 
 
     while True:
@@ -118,7 +118,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         calc_peakfinder_analysis(results, pfdata, pixel_mask_pf)
 
 # ???
-        data, force_send_visualisation, n_aggregated_images, data_summed = calc_force_send(results, data, pixel_mask_pf, image, n_aggregated_images, data_summed)
+        data, force_send_visualisation, data_summed, n_aggregated_images = calc_force_send(results, data, pixel_mask_pf, image, data_summed, n_aggregated_images)
 
         results["type"]  = str(data.dtype)
         results["shape"] = data.shape

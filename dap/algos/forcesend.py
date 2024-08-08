@@ -1,22 +1,22 @@
 import numpy as np
 
 
-def calc_force_send(results, data, pixel_mask_pf, image, n_aggregated_images, data_summed):
+def calc_force_send(results, data, pixel_mask_pf, image, data_summed, n_aggregated_images):
     force_send_visualisation = False
 
     if data.dtype == np.uint16:
-        return data, force_send_visualisation, n_aggregated_images, data_summed
+        return data, force_send_visualisation, data_summed, n_aggregated_images
 
-    apply_threshold = results.get("apply_threshold", False)
     apply_aggregation = results.get("apply_aggregation", False)
+    apply_threshold   = results.get("apply_threshold", False)
 
     if not apply_aggregation:
         data_summed = None
         n_aggregated_images = 1
 
-    if not apply_threshold and not apply_aggregation:
+    if not apply_aggregation and not apply_threshold:
         data = image
-        return data, force_send_visualisation, n_aggregated_images, data_summed
+        return data, force_send_visualisation, data_summed, n_aggregated_images
 
     if apply_threshold and all(k in results for k in ("threshold_min", "threshold_max")):
         threshold_min = float(results["threshold_min"])
@@ -42,7 +42,7 @@ def calc_force_send(results, data, pixel_mask_pf, image, n_aggregated_images, da
     if pixel_mask_pf is not None:
         data[~pixel_mask_pf] = np.nan
 
-    return data, force_send_visualisation, n_aggregated_images, data_summed
+    return data, force_send_visualisation, data_summed, n_aggregated_images
 
 
 
