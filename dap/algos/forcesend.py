@@ -30,7 +30,6 @@ def calc_force_send(results, data, pixel_mask_pf, image, data_summed, n_aggregat
             data += data_summed
             n_aggregated_images += 1
         data_summed = data.copy()
-        data_summed[data == -np.nan] = -np.nan #TODO: this does nothing
         results["aggregated_images"] = n_aggregated_images
         results["worker"] = 1 #TODO: keep this for backwards compatibility?
 
