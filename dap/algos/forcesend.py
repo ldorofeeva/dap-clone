@@ -18,6 +18,18 @@ def calc_force_send(results, data, pixel_mask_pf, image, data_summed, n_aggregat
         data = image
         return data, force_send_visualisation, data_summed, n_aggregated_images
 
+    calc_apply_threshold(results, data) # changes data in place
+
+    data, force_send_visualisation, data_summed, n_aggregated_images = calc_apply_aggregation(results, data, data_summed, n_aggregated_images)
+
+    calc_apply_pixel_mask(data, pixel_mask_pf) # changes data in place
+
+    return data, force_send_visualisation, data_summed, n_aggregated_images
+
+
+
+def calc_apply_threshold(results, data):
+    apply_threshold = results.get("apply_threshold", False)
     if apply_threshold and all(k in results for k in ("threshold_min", "threshold_max")):
         threshold_min = float(results["threshold_min"])
         threshold_max = float(results["threshold_max"])
@@ -25,6 +37,11 @@ def calc_force_send(results, data, pixel_mask_pf, image, data_summed, n_aggregat
         if threshold_max > threshold_min:
             data[data > threshold_max] = 0.0
 
+
+def calc_apply_aggregation(results, data, data_summed, n_aggregated_images):
+    force_send_visualisation = False
+
+    apply_aggregation = results.get("apply_aggregation", False)
     if apply_aggregation and "aggregation_max" in results:
         if data_summed is not None:
             data += data_summed
@@ -38,10 +55,12 @@ def calc_force_send(results, data, pixel_mask_pf, image, data_summed, n_aggregat
             data_summed = None
             n_aggregated_images = 1
 
+    return data, force_send_visualisation, data_summed, n_aggregated_images
+
+
+def calc_apply_pixel_mask(data, pixel_mask_pf):
     if pixel_mask_pf is not None:
         data[~pixel_mask_pf] = np.nan
-
-    return data, force_send_visualisation, data_summed, n_aggregated_images
 
 
 
