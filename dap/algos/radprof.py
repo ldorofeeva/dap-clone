@@ -16,17 +16,7 @@ def calc_radial_integration(results, data, pixel_mask_pf):
     r_min = min(rad)
     r_max = max(rad) + 1
 
-    apply_threshold = results.get("apply_threshold", False)
-
-    #TODO: this is duplicated in calc_apply_threshold and calc_force_send
-    if apply_threshold and all(k in results for k in ("threshold_min", "threshold_max")):
-        threshold_min = float(results["threshold_min"])
-        threshold_max = float(results["threshold_max"])
-        data = data.copy() # do the following in-place changes on a copy
-        data[data < threshold_min] = np.nan
-        #TODO: skipping max is a guess, but not obvious/symmetric -- better to ensure the order min < max by switching them if needed
-        if threshold_max > threshold_min:
-            data[data > threshold_max] = np.nan
+    data = calc_apply_threshold(results, data)
 
     rp = radial_profile(data, rad, norm, pixel_mask_pf)
 
@@ -69,6 +59,23 @@ def radial_profile(data, rad, norm, keep_pixels):
     tbin = np.bincount(rad, data)
     rp = tbin / norm
     return rp
+
+
+
+def calc_apply_threshold(results, data):
+    apply_threshold = results.get("apply_threshold", False)
+
+    #TODO: this is duplicated in calc_apply_threshold and calc_force_send
+    if apply_threshold and all(k in results for k in ("threshold_min", "threshold_max")):
+        threshold_min = float(results["threshold_min"])
+        threshold_max = float(results["threshold_max"])
+        data = data.copy() # do the following in-place changes on a copy
+        data[data < threshold_min] = np.nan
+        #TODO: skipping max is a guess, but not obvious/symmetric -- better to ensure the order min < max by switching them if needed
+        if threshold_max > threshold_min:
+            data[data > threshold_max] = np.nan
+
+    return data
 
 
 
