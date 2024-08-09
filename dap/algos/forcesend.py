@@ -30,30 +30,42 @@ def calc_force_send(results, data, pixel_mask_pf, image, data_summed, n_aggregat
 
 def calc_apply_threshold(results, data):
     apply_threshold = results.get("apply_threshold", False)
-    if apply_threshold and all(k in results for k in ("threshold_min", "threshold_max")):
-        threshold_min = float(results["threshold_min"])
-        threshold_max = float(results["threshold_max"])
-        data[data < threshold_min] = 0.0
-        if threshold_max > threshold_min:
-            data[data > threshold_max] = 0.0
+    if not apply_threshold:
+        return
+
+    for k in ("threshold_min", "threshold_max"):
+        if k not in results:
+            return
+
+    threshold_min = float(results["threshold_min"])
+    threshold_max = float(results["threshold_max"])
+    data[data < threshold_min] = 0.0
+    if threshold_max > threshold_min:
+        data[data > threshold_max] = 0.0
 
 
 def calc_apply_aggregation(results, data, data_summed, n_aggregated_images):
     force_send_visualisation = False
 
     apply_aggregation = results.get("apply_aggregation", False)
-    if apply_aggregation and "aggregation_max" in results:
-        if data_summed is not None:
-            data += data_summed
-            n_aggregated_images += 1
-        data_summed = data.copy()
-        results["aggregated_images"] = n_aggregated_images
-        results["worker"] = 1 #TODO: keep this for backwards compatibility?
+    if not apply_aggregation:
+        return data, force_send_visualisation, data_summed, n_aggregated_images
 
-        if n_aggregated_images >= results["aggregation_max"]:
-            force_send_visualisation = True
-            data_summed = None
-            n_aggregated_images = 1
+    if "aggregation_max" not in results:
+        return data, force_send_visualisation, data_summed, n_aggregated_images
+
+    if data_summed is not None:
+        data += data_summed
+        n_aggregated_images += 1
+    data_summed = data.copy()
+
+    results["aggregated_images"] = n_aggregated_images
+    results["worker"] = 1 #TODO: keep this for backwards compatibility?
+
+    if n_aggregated_images >= results["aggregation_max"]:
+        force_send_visualisation = True
+        data_summed = None
+        n_aggregated_images = 1
 
     return data, force_send_visualisation, data_summed, n_aggregated_images
 
