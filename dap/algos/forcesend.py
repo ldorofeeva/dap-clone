@@ -28,6 +28,7 @@ def calc_force_send(results, data, pixel_mask_pf, image, data_summed, n_aggregat
 
 
 
+#TODO: this is duplicated in calc_apply_threshold and calc_radial_integration
 def calc_apply_threshold(results, data):
     apply_threshold = results.get("apply_threshold", False)
     if not apply_threshold:
@@ -37,7 +38,6 @@ def calc_apply_threshold(results, data):
         if k not in results:
             return
 
-    #TODO: this is duplicated in calc_apply_threshold and calc_radial_integration
     threshold_min = float(results["threshold_min"])
     threshold_max = float(results["threshold_max"])
     data[data < threshold_min] = 0

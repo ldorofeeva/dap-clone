@@ -1,6 +1,7 @@
 import numpy as np
 
 
+#TODO: this is duplicated in calc_radial_integration and calc_force_send
 def calc_apply_threshold(results, data):
     apply_threshold = results.get("apply_threshold", False)
     if not apply_threshold:
@@ -13,7 +14,6 @@ def calc_apply_threshold(results, data):
     threshold_value_choice = results.get("threshold_value", "NaN")
     threshold_value = 0 if threshold_value_choice == "0" else np.nan #TODO
 
-    #TODO: this is duplicated in calc_radial_integration and calc_force_send
     threshold_min = float(results["threshold_min"])
     threshold_max = float(results["threshold_max"])
     data[data < threshold_min] = threshold_value
