@@ -64,16 +64,21 @@ def radial_profile(data, rad, norm, keep_pixels):
 
 def calc_apply_threshold(results, data):
     apply_threshold = results.get("apply_threshold", False)
+    if not apply_threshold:
+        return
+
+    for k in ("threshold_min", "threshold_max"):
+        if k not in results:
+            return
 
     #TODO: this is duplicated in calc_apply_threshold and calc_force_send
-    if apply_threshold and all(k in results for k in ("threshold_min", "threshold_max")):
-        threshold_min = float(results["threshold_min"])
-        threshold_max = float(results["threshold_max"])
-        data = data.copy() # do the following in-place changes on a copy
-        data[data < threshold_min] = np.nan
-        #TODO: skipping max is a guess, but not obvious/symmetric -- better to ensure the order min < max by switching them if needed
-        if threshold_max > threshold_min:
-            data[data > threshold_max] = np.nan
+    threshold_min = float(results["threshold_min"])
+    threshold_max = float(results["threshold_max"])
+    data = data.copy() # do the following in-place changes on a copy
+    data[data < threshold_min] = np.nan
+    #TODO: skipping max is a guess, but not obvious/symmetric -- better to ensure the order min < max by switching them if needed
+    if threshold_max > threshold_min:
+        data[data > threshold_max] = np.nan
 
     return data
 
