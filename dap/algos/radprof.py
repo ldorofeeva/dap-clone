@@ -66,11 +66,11 @@ def radial_profile(data, rad, norm, keep_pixels):
 def calc_apply_threshold(results, data):
     apply_threshold = results.get("apply_threshold", False)
     if not apply_threshold:
-        return
+        return data
 
     for k in ("threshold_min", "threshold_max"):
         if k not in results:
-            return
+            return data
 
     data = data.copy() # do the following in-place changes on a copy
 
