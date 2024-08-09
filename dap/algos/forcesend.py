@@ -1,5 +1,7 @@
 import numpy as np
 
+from .mask import calc_mask_pixels
+
 
 def calc_force_send(results, data, pixel_mask_pf, image, data_summed, n_aggregated_images):
     force_send_visualisation = False
@@ -22,7 +24,7 @@ def calc_force_send(results, data, pixel_mask_pf, image, data_summed, n_aggregat
 
     data, force_send_visualisation, data_summed, n_aggregated_images = calc_apply_aggregation(results, data, data_summed, n_aggregated_images)
 
-    calc_apply_pixel_mask(data, pixel_mask_pf) # changes data in place
+    calc_mask_pixels(data, pixel_mask_pf) # changes data in place
 
     return data, force_send_visualisation, data_summed, n_aggregated_images
 
@@ -74,11 +76,6 @@ def calc_apply_aggregation(results, data, data_summed, n_aggregated_images):
         n_aggregated_images = 1
 
     return data, force_send_visualisation, data_summed, n_aggregated_images
-
-
-def calc_apply_pixel_mask(data, pixel_mask_pf):
-    if pixel_mask_pf is not None:
-        data[~pixel_mask_pf] = np.nan
 
 
 
