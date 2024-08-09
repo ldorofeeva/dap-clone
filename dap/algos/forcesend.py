@@ -56,10 +56,14 @@ def calc_apply_aggregation(results, data, data_summed, n_aggregated_images):
     if "aggregation_max" not in results:
         return data, force_send_visualisation, data_summed, n_aggregated_images
 
-    if data_summed is not None:
-        data += data_summed
+    if data_summed is None:
+        data_summed = data.copy()
+        n_aggregated_images = 1
+    else:
+        data_summed += data
         n_aggregated_images += 1
-    data_summed = data.copy()
+
+    data = data_summed
 
     results["aggregated_images"] = n_aggregated_images
     results["worker"] = 1 #TODO: keep this for backwards compatibility?
