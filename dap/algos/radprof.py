@@ -18,7 +18,7 @@ def calc_radial_integration(results, data, pixel_mask_pf):
 
     apply_threshold = results.get("apply_threshold", False)
 
-    #TODO: this is duplicated in calc_apply_threshold
+    #TODO: this is duplicated in calc_apply_threshold and calc_force_send
     if apply_threshold and all(k in results for k in ("threshold_min", "threshold_max")):
         threshold_min = float(results["threshold_min"])
         threshold_max = float(results["threshold_max"])

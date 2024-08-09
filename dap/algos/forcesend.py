@@ -37,9 +37,11 @@ def calc_apply_threshold(results, data):
         if k not in results:
             return
 
+    #TODO: this is duplicated in calc_apply_threshold and calc_radial_integration
     threshold_min = float(results["threshold_min"])
     threshold_max = float(results["threshold_max"])
     data[data < threshold_min] = 0.0
+    #TODO: skipping max is a guess, but not obvious/symmetric -- better to ensure the order min < max by switching them if needed
     if threshold_max > threshold_min:
         data[data > threshold_max] = 0.0
 
