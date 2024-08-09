@@ -1,6 +1,7 @@
 import numpy as np
 
 from .mask import calc_mask_pixels
+from .thresh import threshold
 
 
 def calc_force_send(results, data, pixel_mask_pf, image, data_summed, n_aggregated_images):
@@ -42,10 +43,9 @@ def calc_apply_threshold(results, data):
 
     threshold_min = float(results["threshold_min"])
     threshold_max = float(results["threshold_max"])
-    data[data < threshold_min] = 0
-    #TODO: skipping max is a guess, but not obvious/symmetric -- better to ensure the order min < max by switching them if needed
-    if threshold_max > threshold_min:
-        data[data > threshold_max] = 0
+
+    threshold(data, threshold_min, threshold_max, 0)
+
 
 
 def calc_apply_aggregation(results, data, data_summed, n_aggregated_images):

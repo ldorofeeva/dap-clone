@@ -1,5 +1,6 @@
 import numpy as np
 
+from .thresh import threshold
 from .utils import npmemo
 
 
@@ -76,10 +77,8 @@ def calc_apply_threshold(results, data):
 
     threshold_min = float(results["threshold_min"])
     threshold_max = float(results["threshold_max"])
-    data[data < threshold_min] = np.nan
-    #TODO: skipping max is a guess, but not obvious/symmetric -- better to ensure the order min < max by switching them if needed
-    if threshold_max > threshold_min:
-        data[data > threshold_max] = np.nan
+
+    threshold(data, threshold_min, threshold_max, np.nan)
 
     return data
 
