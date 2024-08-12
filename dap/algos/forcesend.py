@@ -15,7 +15,7 @@ def calc_force_send(results, data, pixel_mask_pf, image, data_summed, n_aggregat
 
     if not apply_aggregation:
         data_summed = None
-        n_aggregated_images = 1
+        n_aggregated_images = 0
 
     if not apply_aggregation and not apply_threshold:
         data = image
@@ -73,7 +73,7 @@ def calc_apply_aggregation(results, data, data_summed, n_aggregated_images):
     if n_aggregated_images >= results["aggregation_max"]:
         force_send_visualisation = True
         data_summed = None
-        n_aggregated_images = 1
+        n_aggregated_images = 0
 
     return data, force_send_visualisation, data_summed, n_aggregated_images
 

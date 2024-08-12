@@ -45,7 +45,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
 
     data_summed = None
-    n_aggregated_images = 1
+    n_aggregated_images = 0
 
 
     while True:
