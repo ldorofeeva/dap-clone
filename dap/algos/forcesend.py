@@ -8,7 +8,7 @@ def calc_force_send(results, data, pixel_mask_pf, image, aggregator):
     force_send_visualisation = False
 
     if data.dtype == np.uint16:
-        return data, force_send_visualisation, aggregator
+        return data, force_send_visualisation
 
     apply_aggregation = results.get("apply_aggregation", False)
     apply_threshold   = results.get("apply_threshold", False)
@@ -18,15 +18,15 @@ def calc_force_send(results, data, pixel_mask_pf, image, aggregator):
 
     if not apply_aggregation and not apply_threshold:
         data = image
-        return data, force_send_visualisation, aggregator
+        return data, force_send_visualisation
 
     calc_apply_threshold(results, data) # changes data in place
 
-    data, force_send_visualisation, aggregator = calc_apply_aggregation(results, data, aggregator)
+    data, force_send_visualisation = calc_apply_aggregation(results, data, aggregator)
 
     calc_mask_pixels(data, pixel_mask_pf) # changes data in place
 
-    return data, force_send_visualisation, aggregator
+    return data, force_send_visualisation
 
 
 
@@ -52,10 +52,10 @@ def calc_apply_aggregation(results, data, aggregator):
 
     apply_aggregation = results.get("apply_aggregation", False)
     if not apply_aggregation:
-        return data, force_send_visualisation, aggregator
+        return data, force_send_visualisation
 
     if "aggregation_max" not in results:
-        return data, force_send_visualisation, aggregator
+        return data, force_send_visualisation
 
     aggregator += data
 
@@ -69,7 +69,7 @@ def calc_apply_aggregation(results, data, aggregator):
         force_send_visualisation = True
         aggregator.reset()
 
-    return data, force_send_visualisation, aggregator
+    return data, force_send_visualisation
 
 
 

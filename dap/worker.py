@@ -116,7 +116,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         calc_peakfinder_analysis(results, pfdata, pixel_mask_pf)
 
 # ???
-        data, force_send_visualisation, aggregator = calc_force_send(results, data, pixel_mask_pf, image, aggregator)
+        data, force_send_visualisation = calc_force_send(results, data, pixel_mask_pf, image, aggregator)
 
         results["type"]  = str(data.dtype)
         results["shape"] = data.shape
