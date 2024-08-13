@@ -4,30 +4,29 @@ from .mask import calc_mask_pixels
 from .thresh import threshold
 
 
-def calc_force_send(results, data, pixel_mask_pf, image, data_summed, n_aggregated_images):
+def calc_force_send(results, data, pixel_mask_pf, image, aggregator):
     force_send_visualisation = False
 
     if data.dtype == np.uint16:
-        return data, force_send_visualisation, data_summed, n_aggregated_images
+        return data, force_send_visualisation, aggregator
 
     apply_aggregation = results.get("apply_aggregation", False)
     apply_threshold   = results.get("apply_threshold", False)
 
     if not apply_aggregation:
-        data_summed = None
-        n_aggregated_images = 0
+        aggregator.reset()
 
     if not apply_aggregation and not apply_threshold:
         data = image
-        return data, force_send_visualisation, data_summed, n_aggregated_images
+        return data, force_send_visualisation, aggregator
 
     calc_apply_threshold(results, data) # changes data in place
 
-    data, force_send_visualisation, data_summed, n_aggregated_images = calc_apply_aggregation(results, data, data_summed, n_aggregated_images)
+    data, force_send_visualisation, aggregator = calc_apply_aggregation(results, data, aggregator)
 
     calc_mask_pixels(data, pixel_mask_pf) # changes data in place
 
-    return data, force_send_visualisation, data_summed, n_aggregated_images
+    return data, force_send_visualisation, aggregator
 
 
 
@@ -48,34 +47,29 @@ def calc_apply_threshold(results, data):
 
 
 
-def calc_apply_aggregation(results, data, data_summed, n_aggregated_images):
+def calc_apply_aggregation(results, data, aggregator):
     force_send_visualisation = False
 
     apply_aggregation = results.get("apply_aggregation", False)
     if not apply_aggregation:
-        return data, force_send_visualisation, data_summed, n_aggregated_images
+        return data, force_send_visualisation, aggregator
 
     if "aggregation_max" not in results:
-        return data, force_send_visualisation, data_summed, n_aggregated_images
+        return data, force_send_visualisation, aggregator
 
-    if data_summed is None:
-        data_summed = data.copy()
-        n_aggregated_images = 1
-    else:
-        data_summed += data
-        n_aggregated_images += 1
+    aggregator += data
 
-    data = data_summed
+    data = aggregator.data
+    n_aggregated_images = aggregator.counter
 
     results["aggregated_images"] = n_aggregated_images
     results["worker"] = 1 #TODO: keep this for backwards compatibility?
 
     if n_aggregated_images >= results["aggregation_max"]:
         force_send_visualisation = True
-        data_summed = None
-        n_aggregated_images = 0
+        aggregator.reset()
 
-    return data, force_send_visualisation, data_summed, n_aggregated_images
+    return data, force_send_visualisation, aggregator
 
 
 

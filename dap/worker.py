@@ -4,7 +4,7 @@ from random import randint
 import numpy as np
 
 from algos import calc_apply_threshold, calc_force_send, calc_mask_pixels, calc_peakfinder_analysis, calc_radial_integration, calc_roi, calc_spi_analysis, JFData
-from utils import BufferedJSON, read_bit
+from utils import Aggregator, BufferedJSON, read_bit
 from zmqsocks import ZMQSockets
 
 
@@ -43,9 +43,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
     zmq_socks = ZMQSockets(backend_address, accumulator_host, accumulator_port, visualisation_host, visualisation_port)
 
-
-    data_summed = None
-    n_aggregated_images = 0
+    aggregator = Aggregator()
 
 
     while True:
@@ -118,7 +116,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         calc_peakfinder_analysis(results, pfdata, pixel_mask_pf)
 
 # ???
-        data, force_send_visualisation, data_summed, n_aggregated_images = calc_force_send(results, data, pixel_mask_pf, image, data_summed, n_aggregated_images)
+        data, force_send_visualisation, aggregator = calc_force_send(results, data, pixel_mask_pf, image, aggregator)
 
         results["type"]  = str(data.dtype)
         results["shape"] = data.shape
