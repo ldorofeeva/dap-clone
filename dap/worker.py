@@ -129,7 +129,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
         send_empty_cond1 = (apply_aggregation and "aggregation_max" in results and not force_send_visualisation)
         send_empty_cond2 = (not results["is_good_frame"])
-        send_empty_cond3 = (not (results["is_hit_frame"] or randint(1, skip_frames_rate) == 1))
+        send_empty_cond3 = (not results["is_hit_frame"] and randint(1, skip_frames_rate) != 1)
 
         if send_empty_cond1 or send_empty_cond2 or send_empty_cond3:
             data = np.empty((2, 2), dtype=np.uint16)
