@@ -15,6 +15,26 @@ def randskip(skip_rate):
 #  randskip(100) -> False   1% of times (skip 99%)
 
 #TODO: does this actually make sense?
+# the following seems much clearer:
+
+
+#from random import random
+
+#def randskip(percentage):
+#    """
+#    Return True percentage % of times
+#    Return False (100 - percentage) % of times
+#    """
+#    percentage /= 100
+#    return random() < percentage
+
+
+## thus:
+#  randskip(0)   -> False 100% of times (never skip)
+#  randskip(1)   -> False  99% of times (skip   1%)
+#  randskip(10)  -> False  10% of times (skip  90%)
+#  randskip(99)  -> False   1% of times (skip  99%)
+#  randskip(100) -> False   0% of times (always skip)
 
 
 
