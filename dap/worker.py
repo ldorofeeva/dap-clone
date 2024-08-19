@@ -1,10 +1,9 @@
 import argparse
-from random import randint
 
 import numpy as np
 
 from algos import calc_apply_threshold, calc_force_send, calc_mask_pixels, calc_peakfinder_analysis, calc_radial_integration, calc_roi, calc_spi_analysis, JFData
-from utils import Aggregator, BufferedJSON, read_bit
+from utils import Aggregator, BufferedJSON, randskip, read_bit
 from zmqsocks import ZMQSockets
 
 
@@ -133,7 +132,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
         # hits are sent at full rate, but no-hits are sent at reduced frequency
         is_no_hit_frame = (not results["is_hit_frame"])
-        random_skip = (randint(1, skip_frames_rate) != 1)
+        random_skip = randskip(skip_frames_rate)
         is_no_hit_frame_and_skipped = (is_no_hit_frame and random_skip)
 
         if aggregation_is_enabled_but_not_ready or is_bad_frame or is_no_hit_frame_and_skipped:
