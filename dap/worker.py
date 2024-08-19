@@ -116,7 +116,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         calc_peakfinder_analysis(results, pfdata, pixel_mask_pf)
 
 # ???
-        data, force_send_visualisation = calc_force_send(results, data, pixel_mask_pf, image, aggregator)
+        data, aggregation_is_ready = calc_force_send(results, data, pixel_mask_pf, image, aggregator)
 
         results["type"]  = str(data.dtype)
         results["shape"] = data.shape
@@ -126,12 +126,17 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
 
         apply_aggregation = results.get("apply_aggregation", False)
+        aggregation_is_enabled = (apply_aggregation and "aggregation_max" in results)
+        aggregation_is_enabled_but_not_ready = (aggregation_is_enabled and not aggregation_is_ready)
 
-        send_empty_cond1 = (apply_aggregation and "aggregation_max" in results and not force_send_visualisation)
-        send_empty_cond2 = (not results["is_good_frame"])
-        send_empty_cond3 = (not results["is_hit_frame"] and randint(1, skip_frames_rate) != 1)
+        is_bad_frame = (not results["is_good_frame"])
 
-        if send_empty_cond1 or send_empty_cond2 or send_empty_cond3:
+        # hits are sent at full rate, but no-hits are sent at reduced frequency
+        is_no_hit_frame = (not results["is_hit_frame"])
+        random_skip = (randint(1, skip_frames_rate) != 1)
+        is_no_hit_frame_and_skipped = (is_no_hit_frame and random_skip)
+
+        if aggregation_is_enabled_but_not_ready or is_bad_frame or is_no_hit_frame_and_skipped:
             data = np.empty((2, 2), dtype=np.uint16)
             results["type"]  = str(data.dtype)
             results["shape"] = data.shape
