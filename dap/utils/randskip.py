@@ -25,8 +25,7 @@ def randskip(skip_rate):
 #    Return True percentage % of times
 #    Return False (100 - percentage) % of times
 #    """
-#    percentage /= 100
-#    return random() < percentage
+#    return 100 * random() < percentage
 
 
 ## thus:
