@@ -6,8 +6,8 @@ from .thresh import threshold
 
 def calc_force_send(results, data, pixel_mask_pf, image, aggregator):
     data = calc_data(results, data, pixel_mask_pf, image, aggregator)
-    force_send_visualisation = calc_aggregation_ready(results, data, aggregator)
-    return data, force_send_visualisation
+    aggregation_ready = calc_aggregation_ready(results, data, aggregator)
+    return data, aggregation_ready
 
 
 
@@ -90,11 +90,11 @@ def calc_aggregation_ready(results, data, aggregator):
 
     n_aggregated_images = aggregator.counter
 
-    if n_aggregated_images >= results["aggregation_max"]:
-        aggregator.reset()
-        return True
+    if n_aggregated_images < results["aggregation_max"]:
+        return False
 
-    return False
+    aggregator.reset()
+    return True
 
 
 
