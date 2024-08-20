@@ -2,7 +2,7 @@ import argparse
 
 import numpy as np
 
-from algos import calc_apply_threshold, calc_force_send, calc_mask_pixels, calc_peakfinder_analysis, calc_radial_integration, calc_roi, calc_spi_analysis, JFData
+from algos import calc_apply_aggregation, calc_apply_threshold, calc_mask_pixels, calc_peakfinder_analysis, calc_radial_integration, calc_roi, calc_spi_analysis, JFData
 from utils import Aggregator, BufferedJSON, randskip, read_bit
 from zmqsocks import ZMQSockets
 
@@ -115,7 +115,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         calc_peakfinder_analysis(results, pfdata, pixel_mask_pf)
 
 # ???
-        data, aggregation_is_ready = calc_force_send(results, data, pixel_mask_pf, image, aggregator)
+        data, aggregation_is_ready = calc_apply_aggregation(results, data, pixel_mask_pf, image, aggregator)
 
         results["type"]  = str(data.dtype)
         results["shape"] = data.shape

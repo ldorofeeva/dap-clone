@@ -4,7 +4,7 @@ from .mask import calc_mask_pixels
 from .thresh import threshold
 
 
-def calc_force_send(results, data, pixel_mask_pf, image, aggregator):
+def calc_apply_aggregation(results, data, pixel_mask_pf, image, aggregator):
     data = calc_data(results, data, pixel_mask_pf, image, aggregator)
     aggregation_ready = calc_aggregation_ready(results, data, aggregator)
     return data, aggregation_ready
@@ -27,7 +27,7 @@ def calc_data(results, data, pixel_mask_pf, image, aggregator):
 
     calc_apply_threshold(results, data) # changes data in place
 
-    data = calc_apply_aggregation(results, data, aggregator)
+    data = calc_aggregate(results, data, aggregator)
 
     calc_mask_pixels(data, pixel_mask_pf) # changes data in place
 
@@ -52,7 +52,7 @@ def calc_apply_threshold(results, data):
 
 
 
-def calc_apply_aggregation(results, data, aggregator):
+def calc_aggregate(results, data, aggregator):
     apply_aggregation = results.get("apply_aggregation", False)
     if not apply_aggregation:
         return data
