@@ -5,10 +5,15 @@ from .thresh import threshold
 
 
 def calc_force_send(results, data, pixel_mask_pf, image, aggregator):
-    force_send_visualisation = False
+    data = calc_data(results, data, pixel_mask_pf, image, aggregator)
+    force_send_visualisation = calc_aggregation_ready(results, data, aggregator)
+    return data, force_send_visualisation
 
+
+
+def calc_data(results, data, pixel_mask_pf, image, aggregator):
     if data.dtype == np.uint16:
-        return data, force_send_visualisation
+        return data
 
     apply_aggregation = results.get("apply_aggregation", False)
     apply_threshold   = results.get("apply_threshold", False)
@@ -18,15 +23,15 @@ def calc_force_send(results, data, pixel_mask_pf, image, aggregator):
 
     if not apply_aggregation and not apply_threshold:
         data = image
-        return data, force_send_visualisation
+        return data
 
     calc_apply_threshold(results, data) # changes data in place
 
-    data, force_send_visualisation = calc_apply_aggregation(results, data, aggregator)
+    data = calc_apply_aggregation(results, data, aggregator)
 
     calc_mask_pixels(data, pixel_mask_pf) # changes data in place
 
-    return data, force_send_visualisation
+    return data
 
 
 
@@ -48,14 +53,12 @@ def calc_apply_threshold(results, data):
 
 
 def calc_apply_aggregation(results, data, aggregator):
-    force_send_visualisation = False
-
     apply_aggregation = results.get("apply_aggregation", False)
     if not apply_aggregation:
-        return data, force_send_visualisation
+        return data
 
     if "aggregation_max" not in results:
-        return data, force_send_visualisation
+        return data
 
     aggregator += data
 
@@ -65,11 +68,33 @@ def calc_apply_aggregation(results, data, aggregator):
     results["aggregated_images"] = n_aggregated_images
     results["worker"] = 1 #TODO: keep this for backwards compatibility?
 
-    if n_aggregated_images >= results["aggregation_max"]:
-        force_send_visualisation = True
-        aggregator.reset()
+    return data
 
-    return data, force_send_visualisation
+
+
+def calc_aggregation_ready(results, data, aggregator):
+    if data.dtype == np.uint16:
+        return False
+
+    apply_aggregation = results.get("apply_aggregation", False)
+    apply_threshold   = results.get("apply_threshold", False)
+
+    if not apply_aggregation and not apply_threshold:
+        return False
+
+    if not apply_aggregation:
+        return False
+
+    if "aggregation_max" not in results:
+        return False
+
+    n_aggregated_images = aggregator.counter
+
+    if n_aggregated_images >= results["aggregation_max"]:
+        aggregator.reset()
+        return True
+
+    return False
 
 
 
