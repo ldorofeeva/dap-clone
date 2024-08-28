@@ -49,7 +49,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         if not zmq_socks.has_data():
             continue
 
-        image, metadata = zmq_socks.get_data()
+        raw_data, metadata = zmq_socks.get_data()
 
         if metadata["shape"] == [2, 2]: # this is used as marker for empty images
             continue
@@ -90,7 +90,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
         double_pixels = results.get("double_pixels", "mask")
 
-        data = jfdata.process(image, metadata, double_pixels)
+        data = jfdata.process(raw_data, metadata, double_pixels)
 
         if not data:
             continue
@@ -98,7 +98,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         pixel_mask_pf = jfdata.get_pixel_mask(results, double_pixels)
 
         if pixel_mask_pf is not None:
-            saturated_pixels_y, saturated_pixels_x = jfdata.get_saturated_pixels(image, double_pixels)
+            saturated_pixels_y, saturated_pixels_x = jfdata.get_saturated_pixels(raw_data, double_pixels)
             results["saturated_pixels"] = len(saturated_pixels_x)
             results["saturated_pixels_x"] = saturated_pixels_x.tolist()
             results["saturated_pixels_y"] = saturated_pixels_y.tolist()
