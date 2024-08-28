@@ -19,6 +19,9 @@ class Aggregator:
 
     __iadd__ = add
 
+    def is_ready(self, nmax):
+        return (self.counter >= nmax)
+
     def __repr__(self):
         return f"{self.data!r} / {self.counter}"
 

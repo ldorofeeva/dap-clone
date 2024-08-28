@@ -79,9 +79,9 @@ def calc_aggregation_ready(results, data, aggregator):
     if "aggregation_max" not in results:
         return False
 
-    n_aggregated_images = aggregator.counter
+    aggregation_max = results["aggregation_max"]
 
-    if n_aggregated_images < results["aggregation_max"]:
+    if not aggregator.is_ready(aggregation_max):
         return False
 
     aggregator.reset()
