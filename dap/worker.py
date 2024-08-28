@@ -106,13 +106,13 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
         calc_radial_integration(results, image, pixel_mask_pf)
 
-        pfdata = image.copy() #TODO: is this copy needed?
+        pfimage = image.copy() #TODO: is this copy needed?
 
-        calc_mask_pixels(pfdata, pixel_mask_pf) # changes pfdata in place
-        calc_apply_threshold(results, pfdata) # changes pfdata in place
-        calc_roi(results, pfdata, pixel_mask_pf)
+        calc_mask_pixels(pfimage, pixel_mask_pf) # changes pfimage in place
+        calc_apply_threshold(results, pfimage) # changes pfimage in place
+        calc_roi(results, pfimage, pixel_mask_pf)
         calc_spi_analysis(results)
-        calc_peakfinder_analysis(results, pfdata, pixel_mask_pf)
+        calc_peakfinder_analysis(results, pfimage, pixel_mask_pf)
 
 # ???
         image, aggregation_is_ready = calc_apply_aggregation(results, image, pixel_mask_pf, aggregator)
