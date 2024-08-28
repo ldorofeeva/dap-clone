@@ -115,7 +115,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         calc_peakfinder_analysis(results, pfdata, pixel_mask_pf)
 
 # ???
-        data, aggregation_is_ready = calc_apply_aggregation(results, data, pixel_mask_pf, image, aggregator)
+        data, aggregation_is_ready = calc_apply_aggregation(results, data, pixel_mask_pf, aggregator)
 
         results["type"]  = str(data.dtype)
         results["shape"] = data.shape

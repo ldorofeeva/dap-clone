@@ -4,15 +4,15 @@ from .mask import calc_mask_pixels
 from .thresh import threshold
 
 
-def calc_apply_aggregation(results, data, pixel_mask_pf, image, aggregator):
-    data = calc_data(results, data, image, aggregator)
+def calc_apply_aggregation(results, data, pixel_mask_pf, aggregator):
+    data = calc_data(results, data, aggregator)
     calc_mask_pixels(data, pixel_mask_pf) # changes data in place
     aggregation_ready = calc_aggregation_ready(results, data, aggregator)
     return data, aggregation_ready
 
 
 
-def calc_data(results, data, image, aggregator):
+def calc_data(results, data, aggregator):
     if data.dtype == np.uint16:
         return data
 
@@ -23,7 +23,6 @@ def calc_data(results, data, image, aggregator):
         aggregator.reset()
 
     if not apply_aggregation and not apply_threshold:
-        data = image
         return data
 
     calc_apply_threshold(results, data) # changes data in place
