@@ -90,9 +90,9 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
         double_pixels = results.get("double_pixels", "mask")
 
-        data = jfdata.process(raw_data, metadata, double_pixels)
+        image = jfdata.process(raw_data, metadata, double_pixels)
 
-        if not data:
+        if not image:
             continue
 
         pixel_mask_pf = jfdata.get_pixel_mask(results, double_pixels)
@@ -104,9 +104,9 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
             results["saturated_pixels_y"] = saturated_pixels_y.tolist()
 
 
-        calc_radial_integration(results, data, pixel_mask_pf)
+        calc_radial_integration(results, image, pixel_mask_pf)
 
-        pfdata = data.copy() #TODO: is this copy needed?
+        pfdata = image.copy() #TODO: is this copy needed?
 
         calc_mask_pixels(pfdata, pixel_mask_pf) # changes pfdata in place
         calc_apply_threshold(results, pfdata) # changes pfdata in place
@@ -115,10 +115,10 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         calc_peakfinder_analysis(results, pfdata, pixel_mask_pf)
 
 # ???
-        data, aggregation_is_ready = calc_apply_aggregation(results, data, pixel_mask_pf, aggregator)
+        image, aggregation_is_ready = calc_apply_aggregation(results, image, pixel_mask_pf, aggregator)
 
-        results["type"]  = str(data.dtype)
-        results["shape"] = data.shape
+        results["type"]  = str(image.dtype)
+        results["shape"] = image.shape
 
 
         zmq_socks.send_accumulator(results)
@@ -136,11 +136,11 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         is_no_hit_frame_and_skipped = (is_no_hit_frame and random_skip)
 
         if aggregation_is_enabled_but_not_ready or is_bad_frame or is_no_hit_frame_and_skipped:
-            data = np.empty((2, 2), dtype=np.uint16)
-            results["type"]  = str(data.dtype)
-            results["shape"] = data.shape
+            image = np.empty((2, 2), dtype=np.uint16)
+            results["type"]  = str(image.dtype)
+            results["shape"] = image.shape
 
-        zmq_socks.send_visualisation(results, data)
+        zmq_socks.send_visualisation(results, image)
 
 
 
