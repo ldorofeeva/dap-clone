@@ -14,9 +14,6 @@ def calc_apply_aggregation(results, data, pixel_mask_pf, aggregator):
 
 
 def calc_data(results, data, aggregator):
-    if data.dtype == np.uint16:
-        return data
-
     apply_aggregation = results.get("apply_aggregation", False)
 
     if not apply_aggregation:
@@ -64,9 +61,6 @@ def calc_aggregate(results, data, aggregator):
 
 
 def calc_aggregation_ready(results, data, aggregator):
-    if data.dtype == np.uint16:
-        return False
-
     apply_aggregation = results.get("apply_aggregation", False)
     apply_threshold   = results.get("apply_threshold", False)
 
