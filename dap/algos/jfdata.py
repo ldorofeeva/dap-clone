@@ -35,8 +35,8 @@ class JFData:
     def process(self, image, metadata, double_pixels):
         data = self.ju_stream_adapter.process(image, metadata, double_pixels=double_pixels)
 
-        # the pedestal file is loaded in process(), this check needs to be afterwards
-        if not self.ju_stream_adapter.handler.pedestal_file:
+        # pedestal and gain files are loaded in process(), this check needs to be afterwards
+        if not self.ju_stream_adapter.handler.can_convert():
             return None
 
         data = np.ascontiguousarray(data)
