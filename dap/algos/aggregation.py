@@ -62,11 +62,6 @@ def calc_aggregate(results, data, aggregator):
 
 def calc_aggregation_ready(results, data, aggregator):
     apply_aggregation = results.get("apply_aggregation", False)
-    apply_threshold   = results.get("apply_threshold", False)
-
-    if not apply_aggregation and not apply_threshold:
-        return False
-
     if not apply_aggregation:
         return False
 
