@@ -7,6 +7,7 @@ class Aggregator:
     def reset(self):
         self.data = None
         self.counter = 0
+        self.nmax = None
 
     def add(self, item):
         if self.data is None:
@@ -19,13 +20,13 @@ class Aggregator:
 
     __iadd__ = add
 
-    def is_ready(self, nmax):
-        if nmax is None:
+    def is_ready(self):
+        if self.nmax is None:
             return False
-        return (self.counter >= nmax)
+        return (self.counter >= self.nmax)
 
     def __repr__(self):
-        return f"{self.data!r} / {self.counter}"
+        return f"{self.data!r} # ({self.counter} / {self.nmax})"
 
 
 

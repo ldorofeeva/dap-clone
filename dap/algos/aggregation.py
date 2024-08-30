@@ -51,8 +51,9 @@ def calc_aggregate(results, data, aggregator):
 
 
 def calc_aggregation_ready(results, aggregator):
-    aggregation_max = results.get("aggregation_max")
-    if not aggregator.is_ready(aggregation_max):
+    aggregator.nmax = results.get("aggregation_max")
+
+    if not aggregator.is_ready():
         return False
 
     aggregator.reset()
