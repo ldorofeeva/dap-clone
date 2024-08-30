@@ -4,20 +4,10 @@ from .thresh import threshold
 
 def calc_apply_aggregation(results, data, pixel_mask_pf, aggregator):
     calc_apply_threshold(results, data) # changes data in place
-    data = calc_data(results, data, aggregator)
+    data = calc_aggregate(results, data, aggregator)
     calc_mask_pixels(data, pixel_mask_pf) # changes data in place
     aggregation_ready = calc_aggregation_ready(results, aggregator)
     return data, aggregation_ready
-
-
-
-def calc_data(results, data, aggregator):
-    apply_aggregation = results.get("apply_aggregation", False)
-
-    if not apply_aggregation:
-        aggregator.reset()
-
-    return calc_aggregate(results, data, aggregator)
 
 
 
@@ -41,9 +31,11 @@ def calc_apply_threshold(results, data):
 def calc_aggregate(results, data, aggregator):
     apply_aggregation = results.get("apply_aggregation", False)
     if not apply_aggregation:
+        aggregator.reset()
         return data
 
     if "aggregation_max" not in results:
+        aggregator.reset()
         return data
 
     aggregator += data
