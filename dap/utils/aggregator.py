@@ -20,6 +20,8 @@ class Aggregator:
     __iadd__ = add
 
     def is_ready(self, nmax):
+        if nmax is None:
+            return False
         return (self.counter >= nmax)
 
     def __repr__(self):

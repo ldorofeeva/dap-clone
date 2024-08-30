@@ -63,10 +63,7 @@ def calc_aggregation_ready(results, aggregator):
     if not apply_aggregation:
         return False
 
-    if "aggregation_max" not in results:
-        return False
-
-    aggregation_max = results["aggregation_max"]
+    aggregation_max = results.get("aggregation_max")
 
     if not aggregator.is_ready(aggregation_max):
         return False
