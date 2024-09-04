@@ -3,11 +3,18 @@ from .thresh import threshold
 
 
 def calc_apply_aggregation(results, data, pixel_mask_pf, aggregator):
+    # last round was ready, restart
+    if aggregator.is_ready():
+        aggregator.reset()
+
     calc_apply_threshold(results, data) # changes data in place
     data = calc_aggregate(results, data, aggregator)
     calc_mask_pixels(data, pixel_mask_pf) # changes data in place
-    aggregation_ready = calc_aggregation_ready(results, aggregator)
-    return data, aggregation_ready
+
+    aggregator.nmax = results.get("aggregation_max")
+    aggregation_is_ready = aggregator.is_ready()
+
+    return data, aggregation_is_ready
 
 
 
@@ -47,17 +54,6 @@ def calc_aggregate(results, data, aggregator):
     results["worker"] = 1 #TODO: keep this for backwards compatibility?
 
     return data
-
-
-
-def calc_aggregation_ready(results, aggregator):
-    aggregator.nmax = results.get("aggregation_max")
-
-    if not aggregator.is_ready():
-        return False
-
-    aggregator.reset()
-    return True
 
 
 
