@@ -28,7 +28,7 @@ def threshold(data, vmin, vmax, replacement):
     data[data < vmin] = replacement
     #TODO: skipping max is a guess, but not obvious/symmetric -- better to ensure the order min < max by switching them if needed
     if vmax > vmin:
-        data[data > vmin] = replacement
+        data[data > vmax] = replacement
 
 
 
