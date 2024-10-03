@@ -92,7 +92,7 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
         image = jfdata.process(raw_image, metadata, double_pixels)
 
-        if not image:
+        if image is None:
             continue
 
         pixel_mask_pf = jfdata.get_pixel_mask(results, double_pixels)
