@@ -37,7 +37,7 @@ def calc_roi(results, data, pixel_mask_pf):
             roi_area = (ix2 - ix1) * (iy2 - iy1)
             roi_sum_norm = roi_sum / roi_area
         else:
-            roi_sum_norm = np.nanmean(data_roi)
+            roi_sum_norm = np.nanmean(data_roi, dtype=float) # data_roi is np.float32, which cannot be json serialized
 
         roi_indices_x = [ix1, ix2]
         roi_proj_x = np.nansum(data_roi, axis=0).tolist()
