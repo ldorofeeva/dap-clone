@@ -1,23 +1,86 @@
 import numpy as np
 
+from .thresh import threshold
+from .utils import npmemo
 
-def radial_profile(data, r, nr, keep_pixels=None):
-    if keep_pixels is not None:
-        tbin = np.bincount(r, data[keep_pixels].ravel())
-    else:
-        tbin = np.bincount(r, data.ravel())
-    radialprofile = tbin / nr
-    return radialprofile
 
-def prepare_radial_profile(data, center, keep_pixels=None):
-    y, x = np.indices((data.shape))
-    r = np.sqrt((x - center[0])**2 + (y - center[1])**2)
+def calc_radial_integration(results, data, pixel_mask_pf):
+    do_radial_integration = results.get("do_radial_integration", False)
+    if not do_radial_integration:
+        return
+
+    center_x = results["beam_center_x"]
+    center_y = results["beam_center_y"]
+
+    rad, norm = prepare_radial_profile(data.shape, center_x, center_y, pixel_mask_pf)
+
+    r_min = min(rad)
+    r_max = max(rad) + 1
+
+    data = calc_apply_threshold(results, data)
+
+    rp = radial_profile(data, rad, norm, pixel_mask_pf)
+
+    silent_min = results.get("radial_integration_silent_min", None)
+    silent_max = results.get("radial_integration_silent_max", None)
+
+    if (
+        silent_min is not None and
+        silent_max is not None and
+        #TODO: skipping entirely is a guess, but not obvious -- better to ensure the order min < max by switching them if needed
+        silent_max > silent_min and
+        silent_min > r_min and
+        silent_max < r_max
+    ):
+        silent_region = rp[silent_min:silent_max]
+        integral_silent_region = np.sum(silent_region)
+        rp = rp / integral_silent_region
+        results["radint_normalised"] = [silent_min, silent_max]
+
+    results["radint_I"] = rp[r_min:].tolist() #TODO: why not stop at r_max?
+    results["radint_q"] = [r_min, r_max]
+
+
+
+@npmemo
+def prepare_radial_profile(shape, x0, y0, keep_pixels):
+    y, x = np.indices(shape)
+    rad = np.sqrt((x - x0)**2 + (y - y0)**2)
     if keep_pixels is not None:
-        r = r[keep_pixels].astype(int).ravel()
-    else:
-        r = r.astype(np.int).ravel()
-    nr = np.bincount(r)
-    return r, nr
+        rad = rad[keep_pixels]
+    rad = rad.astype(int).ravel()
+    norm = np.bincount(rad)
+    return rad, norm
+
+
+def radial_profile(data, rad, norm, keep_pixels):
+    if keep_pixels is not None:
+        data = data[keep_pixels]
+    data = data.ravel()
+    tbin = np.bincount(rad, data)
+    rp = tbin / norm
+    return rp
+
+
+
+#TODO: this is duplicated in calc_apply_threshold and calc_force_send
+def calc_apply_threshold(results, data):
+    apply_threshold = results.get("apply_threshold", False)
+    if not apply_threshold:
+        return data
+
+    for k in ("threshold_min", "threshold_max"):
+        if k not in results:
+            return data
+
+    data = data.copy() # do the following in-place changes on a copy
+
+    threshold_min = float(results["threshold_min"])
+    threshold_max = float(results["threshold_max"])
+
+    threshold(data, threshold_min, threshold_max, np.nan)
+
+    return data
 
 
 
