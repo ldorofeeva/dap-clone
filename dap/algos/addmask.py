@@ -9,7 +9,7 @@ def calc_apply_additional_mask(results, pixel_mask_pf):
     if not detector_name:
         return
 
-    if detector_name == "JF06T08V05":
+    if detector_name == "JF06T08V06":
         # edge pixels
         pixel_mask_pf[0:1030, 1100] = 0
         pixel_mask_pf[0:1030, 1613] = 0
