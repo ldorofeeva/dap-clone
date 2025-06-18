@@ -3,6 +3,8 @@ import argparse
 import numpy as np
 
 from algos import calc_apply_aggregation, calc_apply_threshold, calc_mask_pixels, calc_peakfinder_analysis, calc_radial_integration, calc_roi, calc_spi_analysis, JFData
+from dap.algos.streakfind import calc_streakfinder_analysis
+from dap.algos.whitefield_correction import calc_apply_whitefield_correction
 from utils import Aggregator, BufferedJSON, randskip, read_bit
 from zmqsocks import ZMQSockets
 
@@ -113,6 +115,12 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
         calc_roi(results, pfimage, pixel_mask_pf)
         calc_spi_analysis(results)
         calc_peakfinder_analysis(results, pfimage, pixel_mask_pf)
+
+        # ##########################################################################
+        # CFEL Chapman streak finder processing
+        calc_apply_whitefield_correction(results, pfimage) # changes pfimage in place
+        calc_streakfinder_analysis(results, pfimage, pixel_mask_pf)
+        # ##########################################################################
 
 # ???
         image, aggregation_is_ready = calc_apply_aggregation(results, image, pixel_mask_pf, aggregator)

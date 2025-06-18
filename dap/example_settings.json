@@ -1,0 +1,25 @@
+{
+  // Peak finder settings
+  "do_peakfinder_analysis": 1,
+  "beam_center_x/beam_center_y": "1.0/1.0",
+  "hitfinder_min_snr": 2.0,
+  "hitfinder_min_pix_count": 7,
+  "hitfinder_adc_thresh": 0.0,
+  "npeaks_threshold_hit": 5,
+
+  // Whitefield correction settings
+  "do_whitefield_correction": 1,
+  "wf_data_file": "/das/work/p22/p22263/whitefield/wf_current.h5",
+  "wf_method":"div",
+
+  // Streak finder settings
+  "sf_structure_radius": 3,
+  "sf_structure_rank": 2,
+  "sf_min_size": 3,
+  "sf_vmin": 0.4,
+  "sf_npts":  5,
+  "sf_xtol": 0.8,
+
+  // Etc
+
+}
