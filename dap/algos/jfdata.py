@@ -37,6 +37,7 @@ class JFData:
 
         # pedestal and gain files are loaded in process(), this check needs to be afterwards
         if not self.ju_stream_adapter.handler.can_convert():
+            print(f"Can't convert !")
             return None
 
         data = np.ascontiguousarray(data)

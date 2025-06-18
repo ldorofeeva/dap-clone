@@ -118,8 +118,11 @@ def work(backend_address, accumulator_host, accumulator_port, visualisation_host
 
         # ##########################################################################
         # CFEL Chapman streak finder processing
+        print(f"Applying whitefield correction")
         calc_apply_whitefield_correction(results, pfimage) # changes pfimage in place
+        print(f"Searching streaks")
         calc_streakfinder_analysis(results, pfimage, pixel_mask_pf)
+        print(f"Done\n{results=}")
         # ##########################################################################
 
 # ???
