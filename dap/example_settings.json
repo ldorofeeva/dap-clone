@@ -10,6 +10,7 @@
   "wf_data_file": "/das/work/p22/p22263/whitefield/wf_current.h5",
   "wf_method": "div",
 
+  "do_streakfinder_analysis": 1,
   "sf_structure_radius": 3,
   "sf_structure_rank": 2,
   "sf_min_size": 3,
