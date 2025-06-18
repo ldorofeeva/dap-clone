@@ -43,7 +43,7 @@ def calc_apply_whitefield_correction(results, data):
               f"{params_required=}")
         return
 
-    with h5py.File("r", wf_data_file) as wfile:
+    with h5py.File(wf_data_file, "r") as wfile:
         whitefield_image = np.asarray(wfile["data/data"])
 
     return wf_methods[wf_method](data, whitefield_image)
